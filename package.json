@@ -1,0 +1,26 @@
+{
+  "name": "trailguesser",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "sst start",
+    "build": "sst build",
+    "deploy": "sst deploy",
+    "remove": "sst remove",
+    "console": "sst console",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@serverless-stack/cli": "^1.7.0",
+    "@serverless-stack/resources": "^1.7.0",
+    "@serverless-stack/static-site-env": "^1.7.0",
+    "@tsconfig/node16": "^1.0.3",
+    "aws-cdk-lib": "2.32.0",
+    "typescript": "^4.7.4",
+    "vitest": "^0.22.0"
+  },
+  "workspaces": [
+    "services"
+  ]
+}

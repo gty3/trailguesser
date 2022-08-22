@@ -1,0 +1,15 @@
+{
+  "name": "@trailGuesser/services",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {},
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.150.0",
+    "@aws-sdk/client-s3": "^3.154.0",
+    "aws-sdk": "^2.1196.0",
+    "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.102"
+  }
+}
