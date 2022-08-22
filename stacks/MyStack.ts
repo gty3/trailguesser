@@ -6,17 +6,38 @@ import {
   Auth,
   Table,
 } from "@serverless-stack/resources"
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
+import * as iam from "aws-cdk-lib/aws-iam"
+import { BucketAccessControl } from "aws-cdk-lib/aws-s3"
 
 export function MyStack({ stack }: StackContext) {
   const bucket = new Bucket(stack, "Bucket", {
     cors: true,
+    cdk: { bucket: { publicReadAccess: true }}
   })
+  
+  const dist = new cloudfront.Distribution(stack, "myDist", {
+    defaultBehavior: {
+      origin: new origins.S3Origin(bucket.cdk.bucket),
+      allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+    },
+  })
+  // const newPolicy =  new iam.PolicyStatement({
+  //   actions: ["s3:*"],
+  //   effect: iam.Effect.ALLOW,
+  //   resources: [
+  //     bucket.bucketArn + "/private/${cognito-identity.amazonaws.com:sub}/*",
+  //   ],
+  // })
 
-  const photoTable = new Table(stack, 'PhotoTable', {
+  bucket.attachPermissions([dist])
+
+  const photoTable = new Table(stack, "PhotoTable", {
     fields: {
       id: "string",
     },
-    primaryIndex: { partitionKey: "id" }
+    primaryIndex: { partitionKey: "id" },
   })
 
   const auth = new Auth(stack, "Auth")
@@ -26,15 +47,17 @@ export function MyStack({ stack }: StackContext) {
       function: {
         environment: {
           BUCKET_NAME: bucket.bucketName,
-          PHOTO_TABLE: photoTable.tableName
-        }
+          PHOTO_TABLE: photoTable.tableName,
+          S3_CLOUDFRONT: dist.domainName,
+          S3_BUCKET: bucket.cdk.bucket.bucketDomainName
+        },
       },
       authorizer: "iam",
     },
     routes: {
-      "GET /": "functions/lambda.handler",
       "GET /getTrailPhoto": "functions/getTrailPhoto.handler",
       "POST /savePhotoData": "functions/savePhotoData.handler",
+      "GET /getAllPhotos": "functions/getAllPhotos.handler",
     },
   })
   api.attachPermissions([bucket, photoTable])
@@ -52,6 +75,7 @@ export function MyStack({ stack }: StackContext) {
       VITE_IDENTITY: auth.cognitoIdentityPoolId ?? "",
       VITE_APIGATEWAY_NAME: api.httpApiId,
       VITE_BUCKET_NAME: bucket.bucketName,
+      VITE_S3_CLOUDFRONT: dist.domainName,
     },
     customDomain:
       stack.stage === "prod"
@@ -64,5 +88,6 @@ export function MyStack({ stack }: StackContext) {
 
   stack.addOutputs({
     ApiEndpoint: api.url,
+    dist: dist.domainName,
   })
 }

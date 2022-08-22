@@ -20,7 +20,7 @@ export default function Upload() {
       console.log("no files selected")
       return
     }
-    console.log(e.target.files[0])
+    console.log(e.target.files[0].name)
   }
 
   const uploadPhoto = async () => {
@@ -29,13 +29,16 @@ export default function Upload() {
     if (!trailNameRef.current || !trailNameRef.current.value) { console.log('no trail name'); return }
    
     const uuid = v4()
+    const fileType = imageRef.current.files[0].name.split('.').pop()
+    const uuidWfileType = uuid + '.' + fileType
+    console.log(uuidWfileType)
     try {
       const sendToDB = API.post(import.meta.env.VITE_APIGATEWAY_NAME,
           "/savePhotoData",
           {
-            body: { id: uuid, trailName: trailNameRef.current.value },
+            body: { id: uuidWfileType, trailName: trailNameRef.current.value },
           })
-      const sendToS3 = Storage.put(uuid, imageRef.current.files[0])
+      const sendToS3 = Storage.put(uuidWfileType, imageRef.current.files[0])
       const [dbRes, s3Res] = await Promise.all([sendToS3, sendToDB])
 
       console.log('#####promise res', dbRes, s3Res)

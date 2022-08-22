@@ -1,15 +1,21 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda"
+import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb"
 import { S3 } from "@aws-sdk/client-s3"
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   
-  const bareBonesS3 = new S3({})
-  const params = { Bucket: process.env.BUCKET_NAME, Key: req.params.imageId };
-  await bareBonesS3.getObject(params)
+  const dbClient = new DynamoDBClient({})
+  const input = {
+    Key: { id: { S: '1' } },
+    TableName: process.env.PHOTO_TABLE
+  }
+  const command = new GetItemCommand(input)
+  const itemRes = await dbClient.send(command)
+  const res = JSON.stringify(itemRes.Item) ?? ""
+  console.log("ITEMRES", itemRes)
 
   return {
     statusCode: 200,
-    headers: { "Content-Type": "text/plain" },
-    body: `Hello, World! Your request was received at ${event.requestContext.time}.`,
+    body: res,
   }
 }

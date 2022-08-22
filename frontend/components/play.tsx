@@ -3,21 +3,30 @@ import React, { useEffect, useState } from "react"
 import "../src/index.css"
 import Spinner from "./spinner"
 export default function Play() {
-  const [state, setState] = useState()
+  const [imagesState, setImagesState] = useState([])
+  const [currentImageState, setCurrentImageState] = useState(0)
 
   useEffect(() => {
     (async () => {
-      const image = await API.get(import.meta.env.VITE_APIGATEWAY_NAME, '/getTrailPhoto', {})
-      console.log('return IMAGE', image)
+      const images = await API.get(
+        import.meta.env.VITE_APIGATEWAY_NAME,
+        "/getAllPhotos",
+        {}
+      )
+      setImagesState(images)
+      console.log("return IMAGE", images)
     })()
   }, [])
 
+  const nextPhoto = () => {
+    setCurrentImageState(currentImageState + 1)
+  }
+
   return (
-    <div className="bg-yellow-700 h-screen">
-      <div className="flex justify-center pt-40">
-        hello
-        <div>{!state && <Spinner />}</div>
-      </div>
+    <div className="bg-yellow-700">
+        {imagesState && <img src={imagesState[currentImageState]} className="h-screen" />}
+        {/* <div>{!state && <Spinner />}</div> */}
+        <button onClick={nextPhoto} className="border rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400">next</button>
     </div>
   )
 }

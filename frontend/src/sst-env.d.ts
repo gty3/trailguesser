@@ -8,6 +8,7 @@ interface ImportMetaEnv {
   readonly VITE_IDENTITY: string
   readonly VITE_APIGATEWAY_NAME: string
   readonly VITE_BUCKET_NAME: string
+  readonly VITE_S3_CLOUDFRONT: string
 }
 
 interface ImportMeta {
