@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react"
 import "./configureAmplify"
-import Play from "../components/play"
-import Upload from "../components/upload"
-import Home from '../components/home'
+import Play from "./components/play"
+import Upload from "./components/upload"
+import Home from './components/home'
 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 

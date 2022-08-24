@@ -15,7 +15,7 @@ export function MyStack({ stack }: StackContext) {
   
   const bucket = new Bucket(stack, "Bucket", {
     cors: true,
-    cdk: { bucket: { publicReadAccess: true }}
+    // cdk: { bucket: { publicReadAccess: true }}
   })
   
   const dist = new cloudfront.Distribution(stack, "myDist", {
@@ -24,15 +24,7 @@ export function MyStack({ stack }: StackContext) {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
     },
   })
-  // const newPolicy =  new iam.PolicyStatement({
-  //   actions: ["s3:*"],
-  //   effect: iam.Effect.ALLOW,
-  //   resources: [
-  //     bucket.bucketArn + "/private/${cognito-identity.amazonaws.com:sub}/*",
-  //   ],
-  // })
-
-  bucket.attachPermissions([dist])
+  // bucket.attachPermissions([dist])
 
   const photoTable = new Table(stack, "PhotoTable", {
     fields: {
@@ -56,6 +48,7 @@ export function MyStack({ stack }: StackContext) {
       authorizer: "iam",
     },
     routes: {
+      "POST /guessLocation": "functions/guessLocation.handler",
       "GET /getTrailPhoto": "functions/getTrailPhoto.handler",
       "POST /savePhotoData": "functions/savePhotoData.handler",
       "GET /getAllPhotos": "functions/getAllPhotos.handler",

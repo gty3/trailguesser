@@ -29,7 +29,7 @@ export default function Play() {
         {imagesState && <img src={imagesState[currentImageState]} className="h-screen" />}
         {/* <div>{!state && <Spinner />}</div> */}
         <button onClick={nextPhoto} className="border rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400">next</button>
-    <GoogleMap className=""/>
+    <GoogleMap imageId={}/>
     </div>
 
   )

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react"
 import { Storage, API } from "aws-amplify"
 import { v4 } from "uuid"
-import Spinner from "../components/spinner"
+import Spinner from "./spinner"
 interface State {
   loading: boolean
   messengerAddress?: string
