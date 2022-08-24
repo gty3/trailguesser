@@ -9,6 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_APIGATEWAY_NAME: string
   readonly VITE_BUCKET_NAME: string
   readonly VITE_S3_CLOUDFRONT: string
+  readonly VITE_GOOGLE_MAPS: string
 }
 
 interface ImportMeta {

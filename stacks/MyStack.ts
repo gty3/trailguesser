@@ -12,6 +12,7 @@ import * as iam from "aws-cdk-lib/aws-iam"
 import { BucketAccessControl } from "aws-cdk-lib/aws-s3"
 
 export function MyStack({ stack }: StackContext) {
+  
   const bucket = new Bucket(stack, "Bucket", {
     cors: true,
     cdk: { bucket: { publicReadAccess: true }}
@@ -76,6 +77,7 @@ export function MyStack({ stack }: StackContext) {
       VITE_APIGATEWAY_NAME: api.httpApiId,
       VITE_BUCKET_NAME: bucket.bucketName,
       VITE_S3_CLOUDFRONT: dist.domainName,
+      VITE_GOOGLE_MAPS: process.env.GOOGLE_MAPS ?? "",
     },
     customDomain:
       stack.stage === "prod"
