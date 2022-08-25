@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react"
 import "./configureAmplify"
-import Play from "./components/play"
-import Upload from "./components/upload"
-import Home from './components/home'
+import Play from "./pages/play"
+import Upload from "./pages/upload"
+import Home from './pages/home'
 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
 
@@ -21,6 +21,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play />} />
+        <Route path="/upload" element={<Upload />} />
       </Routes>
 
 

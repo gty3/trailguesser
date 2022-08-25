@@ -1,7 +1,5 @@
 import React from "react"
-import finn from "/finn.jpg"
 import { Link } from "react-router-dom"
-import Upload from "./upload"
 
 export default function Home() {
   return (
@@ -25,8 +23,14 @@ export default function Home() {
             Play the Beta
           </Link>
         </div>
-
-        {/* <Upload /> */}
+        <div className="mt-72 flex justify-center">
+          <Link
+            to="/upload"
+            className="border rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400"
+          >
+            Upload photos
+          </Link>
+        </div>
       </div>
     </div>
   )

@@ -20,10 +20,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   
   const res = itemRes.Items.reduce((acc, cur) => {
     const unmarshalled = unmarshall(cur)
-    const imgDomain = 'https://' + process.env.S3_CLOUDFRONT + '/public/' + unmarshalled.id
-    acc.push(imgDomain)
+    const imgUrl = 'https://' + process.env.S3_CLOUDFRONT + '/public/' + unmarshalled.id
+    acc.push({id: unmarshalled.id, imgUrl: imgUrl})
     return acc
-  }, [] as string[])
+  }, [] as {}[])
 
   return {
     statusCode: 200,

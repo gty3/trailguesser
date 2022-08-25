@@ -3,6 +3,7 @@ import { isLatLngLiteral } from "@googlemaps/typescript-guards"
 
 import React, { useEffect } from "react"
 
+
 interface MapProps extends google.maps.MapOptions {
   style: { [key: string]: string }
   onClick?: (e: google.maps.MapMouseEvent) => void
@@ -26,7 +27,7 @@ const GoogleMapChild: React.FC<MapProps> = ({
     }
   }, [ref, map])
 
-  useEffect(() => {
+  useDeepCompareEffectForMaps(() => {
     if (map) {
       map.setOptions(options)
     }
@@ -61,39 +62,42 @@ const GoogleMapChild: React.FC<MapProps> = ({
   )
 }
 
-// const deepCompareEqualsForMaps = createCustomEqual(
-//   (deepEqual) => (a: any, b: any) => {
-//     if (
-//       isLatLngLiteral(a) ||
-//       a instanceof google.maps.LatLng ||
-//       isLatLngLiteral(b) ||
-//       b instanceof google.maps.LatLng
-//     ) {
-//       return new google.maps.LatLng(a).equals(new google.maps.LatLng(b))
-//     }
+const deepCompareEqualsForMaps = createCustomEqual(
 
-//     // TODO extend to other types
+  //@ts-ignore
+  (deepEqual) => (a: any, b: any) => {
+    if (
+      isLatLngLiteral(a) ||
+      a instanceof google.maps.LatLng ||
+      isLatLngLiteral(b) ||
+      b instanceof google.maps.LatLng
+    ) {
+      return new google.maps.LatLng(a).equals(new google.maps.LatLng(b))
+    }
 
-//     // use fast-equals for other objects
-//     return deepEqual(a as any, b as any)
-//   }
-// )
+    // TODO extend to other types
 
-// function useDeepCompareMemoize(value: any) {
-//   const ref = React.useRef()
+    // use fast-equals for other objects
+    //@ts-ignore
+    return deepEqual(a, b)
+  }
+)
 
-//   if (!deepCompareEqualsForMaps(value, ref.current)) {
-//     ref.current = value
-//   }
+function useDeepCompareMemoize(value: any) {
+  const ref = React.useRef()
 
-//   return ref.current
-// }
+  if (!deepCompareEqualsForMaps(value, ref.current)) {
+    ref.current = value
+  }
 
-// function useDeepCompareEffectForMaps(
-//   callback: React.EffectCallback,
-//   dependencies: any[]
-// ) {
-//   React.useEffect(callback, dependencies.map(useDeepCompareMemoize))
-// }
+  return ref.current
+}
+
+function useDeepCompareEffectForMaps(
+  callback: React.EffectCallback,
+  dependencies: any[]
+) {
+  React.useEffect(callback, dependencies.map(useDeepCompareMemoize))
+}
 
 export default GoogleMapChild
