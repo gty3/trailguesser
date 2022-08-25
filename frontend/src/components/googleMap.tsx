@@ -9,9 +9,10 @@ const render = (status: Status) => {
 }
 
 const GoogleMap = ({ imageId }: { imageId: string }) => {
-
+  const [guessed, setGuessed] = React.useState(false)
+  const [actualPosition, setActualPosition] = React.useState(null)
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
-  const [zoom, setZoom] = React.useState(0) // initial zoom
+  const [zoom, setZoom] = React.useState(1) // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
     lng: 0,
@@ -30,11 +31,14 @@ const GoogleMap = ({ imageId }: { imageId: string }) => {
   }
 
   const submitGuess = async () => {
+    setGuessed(true)
     const params = { body: {
       latLng: marker,
       id: imageId
     }}
-    await API.post(import.meta.env.VITE_APIGATEWAY_NAME, '/guessLocation', params)
+    const guessRes = await API.post(import.meta.env.VITE_APIGATEWAY_NAME, '/guessLocation', params)
+    setActualPosition(guessRes.actualLocation)
+    console.log('guessRes', guessRes)
   }
 
   return (
@@ -52,6 +56,7 @@ const GoogleMap = ({ imageId }: { imageId: string }) => {
           style={{ flexGrow: "1", height: "100%" }}
         >
             <Marker position={marker} />
+        {guessed && <Marker position={actualPosition} />}
         </GoogleMapChild>
       </Wrapper>
       <button onClick={submitGuess} className="p-1 m-1 bg-gray-400 w-full">Guess!</button>

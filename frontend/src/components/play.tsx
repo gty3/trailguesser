@@ -1,6 +1,5 @@
 import { API } from "aws-amplify"
 import React, { useEffect, useState } from "react"
-import "../src/index.css"
 import Spinner from "./spinner"
 import GoogleMap from './googleMap'
 
@@ -29,7 +28,7 @@ export default function Play() {
         {imagesState && <img src={imagesState[currentImageState]} className="h-screen" />}
         {/* <div>{!state && <Spinner />}</div> */}
         <button onClick={nextPhoto} className="border rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400">next</button>
-    <GoogleMap imageId={}/>
+    <GoogleMap imageId={"9a007c10-5a77-4445-a91a-e911326c74f6.jpg"}/>
     </div>
 
   )

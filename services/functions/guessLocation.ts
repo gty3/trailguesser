@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb"
-
+import { unmarshall } from "@aws-sdk/util-dynamodb"
 
 interface EventBody {
   latLng: {
@@ -26,18 +26,18 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const command = new GetItemCommand(input)
 
   const itemRes = await dbClient.send(command)
-  console.log('itemResItem', itemRes.Item)
   if (!itemRes.Item) { console.log('no itemRes.Item'); return err }
-  const photoLocation = itemRes.Item.location
+  const trailObj = unmarshall(itemRes.Item)
+  const photoLocation = trailObj.latLng
   const res = {
     guessLocation: latLng,
-
+    actualLocation: photoLocation
   }
   
 
   return {
     statusCode: 200,
     headers: { "Content-Type": "text/plain" },
-    body: `Hello, World! Your request was received at ${event.requestContext.time}.`,
+    body: JSON.stringify(res),
   };
 };

@@ -20,7 +20,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   
   const res = itemRes.Items.reduce((acc, cur) => {
     const unmarshalled = unmarshall(cur)
-    const imgDomain = 'https://' + process.env.S3_BUCKET + '/public/' + unmarshalled.id
+    const imgDomain = 'https://' + process.env.S3_CLOUDFRONT + '/public/' + unmarshalled.id
     acc.push(imgDomain)
     return acc
   }, [] as string[])
