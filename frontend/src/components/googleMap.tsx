@@ -42,6 +42,7 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
       "/guessLocation",
       params
     )
+    if (!guessRes.actualLocation) { throw 'wtf, no image location' }
     setActualPosition(guessRes.actualLocation)
     console.log("guessRes", guessRes)
   }
@@ -49,7 +50,7 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
   const nextImage = () => {
     nextPhoto()
     setActualPosition(null)
-    setMarker()
+    setMarker(undefined)
   }
 
   return (
@@ -69,7 +70,7 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
       </Wrapper>
       {actualPosition ? (
         <button onClick={nextImage} className="p-1 m-1 bg-green-400 w-full">
-        Next map!
+        Next trail!
       </button>
       ) : (
         <button onClick={submitGuess} className="p-1 m-1 bg-gray-400 w-full">

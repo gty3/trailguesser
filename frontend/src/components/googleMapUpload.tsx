@@ -8,7 +8,7 @@ const render = (status: Status) => {
   return <h1>{status}</h1>
 }
 
-const GoogleMapUpload = ({ updateLocation }: any) => {
+const GoogleMapUpload = ({ updateLocation, state }: any) => {
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [zoom, setZoom] = React.useState(1) // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({

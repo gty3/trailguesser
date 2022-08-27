@@ -12,12 +12,17 @@ import * as iam from "aws-cdk-lib/aws-iam"
 import { BucketAccessControl } from "aws-cdk-lib/aws-s3"
 
 export function MyStack({ stack }: StackContext) {
-  
   const bucket = new Bucket(stack, "Bucket", {
-    cors: true,
-    // cdk: { bucket: { publicReadAccess: true }}
+    cors: [
+      {
+        allowedHeaders: ["*"],
+        exposedHeaders: ["ETag"],
+        allowedMethods: ["GET", "PUT", "HEAD", "POST", "DELETE"],
+        allowedOrigins: ["*"],
+      },
+    ],
   })
-  
+
   const dist = new cloudfront.Distribution(stack, "myDist", {
     defaultBehavior: {
       origin: new origins.S3Origin(bucket.cdk.bucket),
@@ -42,7 +47,7 @@ export function MyStack({ stack }: StackContext) {
           BUCKET_NAME: bucket.bucketName,
           PHOTO_TABLE: photoTable.tableName,
           S3_CLOUDFRONT: dist.domainName,
-          S3_BUCKET: bucket.cdk.bucket.bucketDomainName
+          S3_BUCKET: bucket.cdk.bucket.bucketDomainName,
         },
       },
       authorizer: "iam",
@@ -71,6 +76,7 @@ export function MyStack({ stack }: StackContext) {
       VITE_BUCKET_NAME: bucket.bucketName,
       VITE_S3_CLOUDFRONT: dist.domainName,
       VITE_GOOGLE_MAPS: process.env.GOOGLE_MAPS ?? "",
+      VITE_FATHOM_ID: process.env.FATHOM_ID ?? ""
     },
     customDomain:
       stack.stage === "prod"

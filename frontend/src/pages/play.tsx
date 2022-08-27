@@ -1,4 +1,4 @@
-import { API } from "aws-amplify"
+import { API } from "@aws-amplify/api"
 import React, { useEffect, useState } from "react"
 import Spinner from "../components/spinner"
 import GoogleMap from "../components/googleMap"
@@ -26,7 +26,11 @@ export default function Play() {
   }, [])
 
   const nextPhoto = () => {
+
+  const randomNumber = Math.floor(Math.random() * imagesState.length) 
+    
     setCurrentImageState(currentImageState + 1)
+    console.log(randomNumber)
   }
 
   const currentPhoto: PhotoArray = imagesState[currentImageState]
