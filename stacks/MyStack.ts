@@ -76,6 +76,7 @@ export function MyStack({ stack }: StackContext) {
       VITE_BUCKET_NAME: bucket.bucketName,
       VITE_S3_CLOUDFRONT: dist.domainName,
       VITE_GOOGLE_MAPS: process.env.GOOGLE_MAPS ?? "",
+      VITE_STAGE: stack.stage,
       VITE_FATHOM_ID: process.env.FATHOM_ID ?? ""
     },
     customDomain:

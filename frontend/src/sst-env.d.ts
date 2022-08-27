@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_BUCKET_NAME: string
   readonly VITE_S3_CLOUDFRONT: string
   readonly VITE_GOOGLE_MAPS: string
+  readonly VITE_STAGE: string
   readonly VITE_FATHOM_ID: string
 }
 

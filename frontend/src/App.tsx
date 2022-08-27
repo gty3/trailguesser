@@ -11,34 +11,29 @@ interface State {
   messengerAddress?: string
 }
 
+function usePageViews() {
+  let location = useLocation();
+  React.useEffect(() => {
+    Fathom.trackPageview()
+  }, [location]);
+}
+
 function App() {
   const [state, setState] = useState<State>({
     loading: false,
   })
-  let fathomLoaded = useRef(false)
-  let location = useLocation()
-
-  useEffect(
-    function setupFathom() {
-      if (!fathomLoaded.current) {
-        Fathom.load(import.meta.env.VITE_FATHOM_ID, { includedDomains: ["trailguesser.com"] })
-        fathomLoaded.current = true
-      } else {
-        Fathom.trackPageview()
-      }
-    },
-    [location]
-  ),
-    []
+  // console.log('import.meta.env.VITE_STAGE', import.meta.env.VITE_FATHOM)
+  if (import.meta.env.VITE_STAGE === "prod") {
+    Fathom.load(import.meta.env.VITE_FATHOM_ID)
+    usePageViews()
+  }
 
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play />} />
         <Route path="/upload" element={<Upload />} />
       </Routes>
-    </BrowserRouter>
   )
 }
 
