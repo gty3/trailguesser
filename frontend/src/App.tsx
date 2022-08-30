@@ -5,6 +5,7 @@ import Upload from "./pages/upload"
 import Home from "./pages/home"
 import * as Fathom from "fathom-client"
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
+import Admin from "./pages/admin"
 
 interface State {
   loading: boolean
@@ -33,6 +34,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play />} />
         <Route path="/upload" element={<Upload />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
   )
 }

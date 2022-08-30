@@ -57,6 +57,8 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
     <>
       <Wrapper apiKey={import.meta.env.VITE_GOOGLE_MAPS} render={render}>
         <GoogleMapChild
+          streetViewControl={false}
+          mapTypeControl={false}
           gestureHandling={"greedy"}
           center={center}
           onClick={onClick}

@@ -29,7 +29,20 @@ export function MyStack({ stack }: StackContext) {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
     },
   })
-  // bucket.attachPermissions([dist])
+
+  const userGames = new Table(stack, "UserGames", {
+    fields: {
+      id: "string"
+    },
+    primaryIndex: { partitionKey: "id"}
+  })
+
+  const levelsTable = new Table(stack, "LevelsTable", {
+    fields: {
+      level: "string",
+    },
+    primaryIndex: { partitionKey: "level" },
+  })
 
   const photoTable = new Table(stack, "PhotoTable", {
     fields: {
@@ -48,12 +61,16 @@ export function MyStack({ stack }: StackContext) {
           PHOTO_TABLE: photoTable.tableName,
           S3_CLOUDFRONT: dist.domainName,
           S3_BUCKET: bucket.cdk.bucket.bucketDomainName,
+          LEVELS_TABLE: levelsTable.tableName,
+          USER_GAMES: userGames.tableName
         },
       },
       authorizer: "iam",
     },
     routes: {
       "POST /guessLocation": "functions/guessLocation.handler",
+      "POST /retrieveLevel": "functions/retrieveLevel.handler",
+      "GET /getUserGames": "functions/getUserGames.handler",
       "GET /getTrailPhoto": "functions/getTrailPhoto.handler",
       "POST /savePhotoData": "functions/savePhotoData.handler",
       "GET /getAllPhotos": "functions/getAllPhotos.handler",

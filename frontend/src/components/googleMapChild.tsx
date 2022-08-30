@@ -3,7 +3,6 @@ import { isLatLngLiteral } from "@googlemaps/typescript-guards"
 
 import React, { useEffect } from "react"
 
-
 interface MapProps extends google.maps.MapOptions {
   style: { [key: string]: string }
   onClick?: (e: google.maps.MapMouseEvent) => void
@@ -63,7 +62,6 @@ const GoogleMapChild: React.FC<MapProps> = ({
 }
 
 const deepCompareEqualsForMaps = createCustomEqual(
-
   //@ts-ignore
   (deepEqual) => (a: any, b: any) => {
     if (
