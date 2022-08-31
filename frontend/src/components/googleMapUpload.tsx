@@ -31,6 +31,7 @@ const GoogleMapUpload = ({ updateLocation, state }: any) => {
   return (
     <Wrapper apiKey={import.meta.env.VITE_GOOGLE_MAPS} render={render}>
       <GoogleMapChild
+        clickableIcons={false}
         mapTypeControl={false}
         streetViewControl={false}
         gestureHandling={"greedy"}

@@ -8,8 +8,6 @@ import {
 } from "@serverless-stack/resources"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
-import * as iam from "aws-cdk-lib/aws-iam"
-import { BucketAccessControl } from "aws-cdk-lib/aws-s3"
 
 export function MyStack({ stack }: StackContext) {
   const bucket = new Bucket(stack, "Bucket", {
@@ -76,7 +74,7 @@ export function MyStack({ stack }: StackContext) {
       "GET /getAllPhotos": "functions/getAllPhotos.handler",
     },
   })
-  api.attachPermissions([bucket, photoTable])
+  api.attachPermissions([bucket, photoTable, levelsTable, userGames])
 
   auth.attachPermissionsForUnauthUsers(stack, [bucket, api])
   auth.attachPermissionsForAuthUsers(stack, [bucket])

@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda"
-import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb"
-import { S3 } from "@aws-sdk/client-s3"
+import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb"
+import { unmarshall } from "@aws-sdk/util-dynamodb"
 
 interface EventBody {
   level: string
@@ -9,18 +9,34 @@ interface EventBody {
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const eventBody: EventBody = JSON.parse(event.body ?? "")
   const { level } = eventBody
+
   const dbClient = new DynamoDBClient({})
   const input = {
-    Key: { id: { S: level } },
-    TableName: process.env.LEVELS_TABLE
+    Key: { level: { S: "" + level } },
+    TableName: process.env.LEVELS_TABLE,
   }
   const command = new GetItemCommand(input)
   const itemRes = await dbClient.send(command)
-  const res = JSON.stringify(itemRes.Item) ?? ""
-  console.log("LEVEL ITEMRES", itemRes)
+  console.log('wtf itemRes', itemRes)
+  if (!itemRes.Item) {
+    return { statusCode: 500 }
+  }
+
+  const idArray = unmarshall(itemRes.Item)
+  const imageArray = idArray.ids.map((id: string) => {
+    return {
+      id: id,
+      url: "https://" + process.env.S3_CLOUDFRONT + "/public/" + id,
+    }
+  })
+
+  const levelData = {
+    level: level,
+    images: imageArray,
+  }
 
   return {
     statusCode: 200,
-    body: res,
+    body: JSON.stringify(levelData),
   }
 }

@@ -7,7 +7,13 @@ const render = (status: Status) => {
   return <h1>{status}</h1>
 }
 
-const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) => {
+const GoogleMap = ({
+  imageId,
+  nextPhoto,
+}: {
+  imageId: string
+  nextPhoto: any
+}) => {
   const [guessed, setGuessed] = React.useState(false)
   const [actualPosition, setActualPosition] = React.useState(null)
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
@@ -42,7 +48,9 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
       "/guessLocation",
       params
     )
-    if (!guessRes.actualLocation) { throw 'wtf, no image location' }
+    if (!guessRes.actualLocation) {
+      throw "wtf, no image location"
+    }
     setActualPosition(guessRes.actualLocation)
     console.log("guessRes", guessRes)
   }
@@ -57,6 +65,7 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
     <>
       <Wrapper apiKey={import.meta.env.VITE_GOOGLE_MAPS} render={render}>
         <GoogleMapChild
+          clickableIcons={false}
           streetViewControl={false}
           mapTypeControl={false}
           gestureHandling={"greedy"}
@@ -72,10 +81,10 @@ const GoogleMap = ({ imageId, nextPhoto }: { imageId: string, nextPhoto: any }) 
       </Wrapper>
       {actualPosition ? (
         <button onClick={nextImage} className="p-1 m-1 bg-green-400 w-full">
-        Next trail!
-      </button>
+          Next trail!
+        </button>
       ) : (
-        <button onClick={submitGuess} className="p-1 m-1 bg-gray-400 w-full">
+        <button onClick={submitGuess} className="w-full p-1 m-1 bg-blue-400">
           Guess!
         </button>
       )}

@@ -1,30 +1,35 @@
 import { API } from "aws-amplify"
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import getUserGames from "../lib/getUserGames"
+import { retrieveLevel, getUserGames } from "../lib/api"
+
+interface LevelData {
+  level: string
+  images: {
+    id: string
+    url: string
+  }[]
+}
 
 export default function Home() {
-  const lastLevelCompleted = getUserGames()
-  console.log('lastLevelCompleted', lastLevelCompleted)
-  const level = lastLevelCompleted ? "showLevels" : "1"
+  const [levelDataState, setLevelDataState] = useState<LevelData>()
+  console.log('levelDataState',levelDataState)
+  useEffect(() => {
+    ;(async () => {
+      const levelsCompleted = await getUserGames()
 
-  const [levelDataState, setLevelDataState] = useState()
+      console.log("levelsCompleted", levelsCompleted)
+      if (levelsCompleted.levels.length < 1) {
+        setLevelDataState(await retrieveLevel("1"))
+      } else {
+        setLevelDataState({
+          level: "levels",
+          images: []
+        })
+      }
 
-  if (!lastLevelCompleted) {
-    useEffect(() => {
-      ;(async () => {
-        const params = { body: { level: "1" } }
-        const levelData = await API.post(
-          import.meta.env.VITE_APIGATEWAY_NAME,
-          "/retrieveLevel",
-          params
-        )
-        setLevelDataState(levelData)
-        console.log('leveldata', levelData)
-      })()
-      
-    }, [])
-  }
+    })()
+  }, [])
 
   return (
     <div
@@ -40,11 +45,11 @@ export default function Home() {
         </div>
         <div className="mt-10 flex justify-center">
           <Link
-            state={levelDataState && { level: levelDataState }}
+            state={levelDataState && { ...levelDataState }}
             to="/play"
-            className="border rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400"
+            className="border px-8 rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400"
           >
-            Play the Beta
+            Play
           </Link>
         </div>
         <div className="mt-32 flex justify-center">
