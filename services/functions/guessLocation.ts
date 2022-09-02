@@ -62,7 +62,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     guessLocation: latLng,
     actualLocation: trailObj.latLng,
     distance: distance,
-    points: points
+    points: points,
+    center: null
   }
 
   return {

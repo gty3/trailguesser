@@ -17,7 +17,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   }
   const command = new GetItemCommand(input)
   const itemRes = await dbClient.send(command)
-  console.log('wtf itemRes', itemRes)
+
   if (!itemRes.Item) {
     return { statusCode: 500 }
   }

@@ -1,4 +1,5 @@
 import { API } from "aws-amplify"
+import { GuessLocationReturn } from "./types"
 
 interface UserLevels {
   id: string | null
@@ -20,7 +21,7 @@ export async function getUserGames(): Promise<UserLevels> {
   } catch (err) {
     return {
       id: null,
-      levels: []
+      levels: [],
     }
   }
 }
@@ -39,4 +40,19 @@ export async function saveUserGame(level: string): Promise<void | undefined> {
   } catch (err) {
     console.log(err)
   }
+}
+
+export async function guessRes({
+  latLng,
+  id,
+}: {
+  latLng: google.maps.LatLng
+  id: string
+}): Promise<GuessLocationReturn> {
+  return await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/guessLocation", {
+    body: {
+      latLng: latLng,
+      id: id
+    }
+  })
 }

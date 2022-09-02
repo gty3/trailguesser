@@ -58,7 +58,7 @@ export default function Play() {
 
     })()
 
-    return <div>Error</div>
+    return <div className="flex justify-center mt-80"><Spinner /></div>
   }
   console.log("levelState;", levelState)
 

@@ -7,6 +7,7 @@ import {
   Table,
 } from "@serverless-stack/resources"
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
+import * as iam from "aws-cdk-lib/aws-iam"
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
 
 export function MyStack({ stack }: StackContext) {
@@ -30,9 +31,9 @@ export function MyStack({ stack }: StackContext) {
 
   const userGames = new Table(stack, "UserGames", {
     fields: {
-      id: "string"
+      id: "string",
     },
-    primaryIndex: { partitionKey: "id"}
+    primaryIndex: { partitionKey: "id" },
   })
 
   const levelsTable = new Table(stack, "LevelsTable", {
@@ -60,7 +61,7 @@ export function MyStack({ stack }: StackContext) {
           S3_CLOUDFRONT: dist.domainName,
           S3_BUCKET: bucket.cdk.bucket.bucketDomainName,
           LEVELS_TABLE: levelsTable.tableName,
-          USER_GAMES: userGames.tableName
+          USER_GAMES: userGames.tableName,
         },
       },
       authorizer: "iam",
@@ -71,13 +72,33 @@ export function MyStack({ stack }: StackContext) {
       "GET /getUserGames": "functions/getUserGames.handler",
       "GET /getTrailPhoto": "functions/getTrailPhoto.handler",
       "POST /savePhotoData": "functions/savePhotoData.handler",
-      "GET /getAllPhotos": "functions/getAllPhotos.handler",
+      "GET /getAllPhotos": {
+        function: {
+          handler: "functions/getAllPhotos.handler"
+        },
+      },
     },
   })
+
   api.attachPermissions([bucket, photoTable, levelsTable, userGames])
 
-  auth.attachPermissionsForUnauthUsers(stack, [bucket, api])
-  auth.attachPermissionsForAuthUsers(stack, [bucket])
+  const iamResource = `arn:aws:execute-api:${stack.region}:${stack.account}:${api.httpApiId}`
+
+  auth.attachPermissionsForAuthUsers(stack, [bucket, api])
+  auth.attachPermissionsForUnauthUsers(stack, [
+    bucket,
+    new iam.PolicyStatement({
+      actions: ["execute-api:Invoke"],
+      effect: iam.Effect.ALLOW,
+      resources: [
+        iamResource + "/guessLocation",
+        iamResource + "/retrieveLevel",
+        iamResource + "/getUserGames",
+        iamResource + "/getTrailPhoto",
+        iamResource + "/savePhotoData",
+      ],
+    }),
+  ])
 
   new ViteStaticSite(stack, "ReactSite", {
     path: "frontend",
@@ -92,7 +113,7 @@ export function MyStack({ stack }: StackContext) {
       VITE_S3_CLOUDFRONT: dist.domainName,
       VITE_GOOGLE_MAPS: process.env.GOOGLE_MAPS ?? "",
       VITE_STAGE: stack.stage,
-      VITE_FATHOM_ID: process.env.FATHOM_ID ?? ""
+      VITE_FATHOM_ID: process.env.FATHOM_ID ?? "",
     },
     customDomain:
       stack.stage === "prod"

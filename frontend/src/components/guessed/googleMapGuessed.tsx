@@ -1,33 +1,27 @@
 import * as React from "react"
 import { Wrapper, Status } from "@googlemaps/react-wrapper"
-import GoogleMapChild from "./googleMapChild"
+import GoogleMapChild from "../googleMapChild"
 import { API } from "@aws-amplify/api"
 
-import { GuessLocationReturn, LatLng } from "../lib/types"
+import { GuessLocationReturn, LatLng } from "../../lib/types"
 
 const render = (status: Status) => {
   return <h1>{status}</h1>
 }
 
-const GoogleMap = ({
-  click,
+const GoogleMapGuessed = ({
   marker,
   actualData
 }: {
-  click: (e: google.maps.MapMouseEvent) => void
   marker: any
-  actualData: GuessLocationReturn | undefined
+  actualData: GuessLocationReturn
 }) => {
 
-  const [zoom, setZoom] = React.useState(1) // initial zoom
-  const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
-    lat: 0,
-    lng: 0,
-  })
+  const [zoom, setZoom] = React.useState(1)
+  const [center, setCenter] = React.useState<LatLng>(actualData.actualLocation)
 
   const onIdle = (m: google.maps.Map) => {
     console.log("onIdle")
-    /*below was undefined ?*/
     setZoom(m.getZoom()!)
     setCenter(m.getCenter()!.toJSON())
   }
@@ -41,13 +35,12 @@ const GoogleMap = ({
           mapTypeControl={false}
           gestureHandling={"greedy"}
           center={center}
-          onClick={click}
           onIdle={onIdle}
           zoom={zoom}
           style={{ flexGrow: "1", height: "100%" }}
         >
           <Marker position={marker} />
-          {actualData && <Marker position={actualData.actualLocation} />}
+          <Marker position={actualData.actualLocation} />
         </GoogleMapChild>
       </Wrapper>
 
@@ -80,4 +73,4 @@ const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   return null
 }
 
-export default GoogleMap
+export default GoogleMapGuessed
