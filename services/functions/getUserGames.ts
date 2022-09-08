@@ -36,7 +36,7 @@ export const handler = async (
       }
     } else {
       const putInput = {
-        Item: { id: { S: identityId }, levels: { L: [] } },
+        Item: { id: { S: identityId }, levels: { M: {} } },
         TableName: process.env.USER_GAMES,
       }
       const putCommand = new PutItemCommand(putInput)

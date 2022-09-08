@@ -86,18 +86,19 @@ export function MyStack({ stack }: StackContext) {
 
   auth.attachPermissionsForAuthUsers(stack, [bucket, api])
   auth.attachPermissionsForUnauthUsers(stack, [
+    api,
     bucket,
-    new iam.PolicyStatement({
-      actions: ["execute-api:Invoke"],
-      effect: iam.Effect.ALLOW,
-      resources: [
-        iamResource + "/guessLocation",
-        iamResource + "/retrieveLevel",
-        iamResource + "/getUserGames",
-        iamResource + "/getTrailPhoto",
-        iamResource + "/savePhotoData",
-      ],
-    }),
+    // new iam.PolicyStatement({
+    //   actions: ["execute-api:Invoke"],
+    //   effect: iam.Effect.ALLOW,
+    //   resources: [
+    //     iamResource + "/guessLocation",
+    //     iamResource + "/retrieveLevel",
+    //     iamResource + "/getUserGames",
+    //     iamResource + "/getTrailPhoto",
+    //     iamResource + "/savePhotoData",
+    //   ],
+    // }),
   ])
 
   new ViteStaticSite(stack, "ReactSite", {

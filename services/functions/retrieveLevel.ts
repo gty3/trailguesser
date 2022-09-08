@@ -23,6 +23,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   }
 
   const idArray = unmarshall(itemRes.Item)
+  
   const imageArray = idArray.ids.map((id: string) => {
     return {
       id: id,
