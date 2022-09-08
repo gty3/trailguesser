@@ -52,7 +52,9 @@ export default function Play({
     const resData = await guessRes({
       latLng: marker,
       id: currentPhoto.id,
+      level: levelState.level,
     })
+    console.log("resdatta should be that type", resData)
     if (!resData.actualLocation) {
       throw "wtf, no image location"
     }
@@ -87,14 +89,14 @@ export default function Play({
     )
   } else {
     return (
-      <div className="bg-yellow-70 h-screen">
+      <div className="bg-gray-100 h-screen">
         {levelState.images.length > 0 && (
           <img src={currentPhoto.url} className="h-screen object-cover" />
         )}
 
         <div
-          className="md:mb-10 md:mr-10 md:h-52 md:w-52 md:hover:h-1/2 md:hover:w-1/2 md:hover:m-10 
-            absolute bottom-20 right-0 h-64 w-full"
+          className="md:p-10 md:h-52 md:w-52 md:hover:h-2/3 md:hover:bottom-0 md:hover:w-2/3 md:hover:p-20 md:hover:pb-32
+            absolute bottom-10 right-0 h-72 w-full pb-8"
         >
           {levelState.images.length > 0 && (
             <GoogleMap
@@ -103,11 +105,14 @@ export default function Play({
               actualData={actualData}
             />
           )}
+          <div className="flex justify-center">
             <button
               onClick={submitGuess}
-              className="z-10 w-full flex justify-center p-1 m-1 bg-blue-400"
-            >{!guessing ? "Guess!" : <Spinner className="pb-1" />}</button>
-            
+              className="z-10 w-32 flex justify-center p-2 m-1 mt-4  bg-blue-600 text-white rounded"
+            >
+              {!guessing ? "Guess!" : <Spinner className="pb-1" />}
+            </button>
+          </div>
         </div>
       </div>
     )

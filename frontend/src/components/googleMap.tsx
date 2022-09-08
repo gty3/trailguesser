@@ -19,7 +19,7 @@ const GoogleMap = ({
   actualData: GuessLocationReturn | undefined
 }) => {
 
-  const [zoom, setZoom] = React.useState(1) // initial zoom
+  const [zoom, setZoom] = React.useState(2) // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
     lng: 0,

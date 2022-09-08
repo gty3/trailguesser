@@ -19,7 +19,7 @@ export default function Home() {
       const levelsCompleted = await getUserGames()
 
       console.log("levelsCompleted", levelsCompleted)
-      if (levelsCompleted.levels.length < 1) {
+      if (levelsCompleted.levels.hasOwnProperty('id')) {
         setLevelDataState(await retrieveLevel("1"))
       } else {
         setLevelDataState({

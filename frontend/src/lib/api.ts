@@ -3,7 +3,7 @@ import { GuessLocationReturn } from "./types"
 
 interface UserLevels {
   id: string | null
-  levels: string[]
+  levels: {}
 }
 interface LevelData {
   level: string
@@ -21,7 +21,7 @@ export async function getUserGames(): Promise<UserLevels> {
   } catch (err) {
     return {
       id: null,
-      levels: [],
+      levels: {},
     }
   }
 }
@@ -45,14 +45,29 @@ export async function saveUserGame(level: string): Promise<void | undefined> {
 export async function guessRes({
   latLng,
   id,
+  level
 }: {
   latLng: google.maps.LatLng
   id: string
+  level: string
 }): Promise<GuessLocationReturn> {
-  return await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/guessLocation", {
+const shit = await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/guessLocation", {
     body: {
       latLng: latLng,
-      id: id
+      id: id,
+      level: level
     }
+  })
+  console.log('shit', shit)
+  return shit
+}
+
+// export async function saveGame({
+//   level:
+// })
+
+export async function newGame({ level }: { level: string}): Promise<void> {
+  await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/newGame", {
+    level: level
   })
 }
