@@ -11,8 +11,6 @@ interface PhotoArray {
 }
 ;[]
 
-
-
 export default function Play({
   levelState,
   setLevelState,
@@ -23,7 +21,7 @@ export default function Play({
   const [currentImageState, setCurrentImageState] = useState(0)
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [actualData, setActualData] = useState<GuessLocationReturn>()
-  const [guessing, setGuessing] = useState(false)
+  const [guessing, setGuessing] = useState("")
 
   const imagesObjArray = levelState.images
 
@@ -41,7 +39,7 @@ export default function Play({
     if (!marker) {
       return
     }
-    setGuessing(true)
+    setGuessing("loading")
     const resData = await guessRes({
       latLng: marker,
       id: currentPhoto.id,
@@ -56,9 +54,9 @@ export default function Play({
       points: resData.points,
       actualLocation: resData.actualLocation,
       center: resData.center,
-      zoom: resData.zoom
+      zoom: resData.zoom,
     })
-    setGuessing(false)
+    setGuessing("")
   }
 
   const nextPhoto = () => {
@@ -105,7 +103,13 @@ export default function Play({
               onClick={submitGuess}
               className="z-10 w-32 flex justify-center p-2 m-1 mt-4  bg-blue-600 text-white rounded"
             >
-              {!guessing ? "Guess!" : <Spinner className="pb-1" />}
+              {guessing === "loading" ? (
+                <Spinner className="pb-1" />
+              ) : marker ? (
+                "Guess!"
+              ) : (
+                "Place a marker"
+              )}
             </button>
           </div>
         </div>
