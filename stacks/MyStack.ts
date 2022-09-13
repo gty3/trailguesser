@@ -29,6 +29,13 @@ export function MyStack({ stack }: StackContext) {
     },
   })
 
+  const emailsTable = new Table(stack, "EmailsTable", {
+    fields: { 
+      email: "string"
+    },
+    primaryIndex: { partitionKey: "email" }
+  })
+
   const userGames = new Table(stack, "UserGames", {
     fields: {
       id: "string",
@@ -62,6 +69,7 @@ export function MyStack({ stack }: StackContext) {
           S3_BUCKET: bucket.cdk.bucket.bucketDomainName,
           LEVELS_TABLE: levelsTable.tableName,
           USER_GAMES: userGames.tableName,
+          EMAILS_TABLE: emailsTable.tableName,
         },
       },
       authorizer: "iam",
@@ -77,10 +85,11 @@ export function MyStack({ stack }: StackContext) {
           handler: "functions/getAllPhotos.handler"
         },
       },
+      "POST /submitEmail": "functions/submitEmail.handler"
     },
   })
 
-  api.attachPermissions([bucket, photoTable, levelsTable, userGames])
+  api.attachPermissions([bucket, photoTable, levelsTable, userGames, emailsTable])
 
   const iamResource = `arn:aws:execute-api:${stack.region}:${stack.account}:${api.httpApiId}`
 

@@ -5,6 +5,7 @@ import GoogleMap from "../components/googleMap"
 import { useLocation } from "react-router-dom"
 import Game from "../components/game"
 import { retrieveLevel, getUserGames } from "../lib/api"
+import Email from "../components/email"
 
 interface PhotoArray {
   id: string
@@ -92,7 +93,7 @@ export default function Play() {
     return (
       <>
         <div className="bg-gray-100 h-screen">
-          <div className="grid md:grid-flow-col grid-flow-row md:pt-80 justify-items-center">
+          <div className="grid md:grid-flow-col md:pt-80 justify-items-center">
             <div className="">
               <img
                 src={level1State?.images[0].url}
@@ -119,24 +120,7 @@ export default function Play() {
             </div>
             {/* </div> */}
           </div>
-          <div className="pt-10 md:mt-32 flex justify-center bg-gray-100">
-            <div className="flex flex-col w-96">
-              <div className="m-2">
-                ⚠️ TrailGuesser is brand new! Get informed about new levels:
-              </div>
-              <div className="flex">
-                <input
-                  className="p-2 m-2 outline outline-1 rounded outline-black"
-                  placeholder="Email address"
-                  type="text"
-                ></input>
-                <div className="bg-blue-600 m-2 ml-4 rounded p-2 text-white">
-                  Submit
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="pt-2 pb-10 flex justify-center bg-gray-100"></div>
+          <Email />
         </div>
       </>
     )

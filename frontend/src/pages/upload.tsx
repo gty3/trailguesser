@@ -4,7 +4,7 @@ import { API } from "@aws-amplify/api"
 import { v4 } from "uuid"
 import Spinner from "../components/spinner"
 import GoogleMapUpload from "../components/googleMapUpload"
-
+import { uploadPhotoData } from "../lib/api"
 interface State {
   loading: string
   displayURL?: string
@@ -14,14 +14,7 @@ interface State {
   error: string
   uuid: string
 }
-interface PostPhotoParams {
-  id: string
-  trailName?: string
-  latLng: {
-    lat: number
-    lng: number
-  }
-}
+
 
 export default function Upload() {
   const [state, setState] = useState<State>({
@@ -52,11 +45,14 @@ export default function Upload() {
     const uuid = v4()
     trailNameRef.current.value = ""
     setState({
-      ...state,
+      // ...state,
       displayURL: URL.createObjectURL(e.target.files[0]),
       loading: "",
       s3Loading: true,
       uuid: uuid,
+      error: "",
+      lat: null,
+      lng: null
     })
     console.log("UUID photoselected", uuid)
     try {
@@ -86,39 +82,26 @@ export default function Upload() {
       setState({ ...state, error: "latLng" })
       return
     }
-    console.log('uuiddata', state.uuid)
-
     setState({ ...state, loading: "loading" })
     const fileType = imageRef.current.files[0].name.split(".").pop()
     const uuidWfileType = state.uuid + "." + fileType
-    const paramsBody: PostPhotoParams = {
-      id: uuidWfileType,
+
+    const successString = await uploadPhotoData({
+      id: uuidWfileType, 
       latLng: {
         lat: state.lat,
-        lng: state.lng,
+        lng: state.lng
       },
-      ...(trailNameRef.current &&
-        trailNameRef.current.value && {
-          trailName: trailNameRef.current.value,
-        }),
-    }
+      trailName: trailNameRef.current?.value
+    })
+    setState({ ...state, loading: successString })
 
-    try {
-      await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/savePhotoData", {
-        body: paramsBody,
-      })
-      setState({ ...state, loading: "success" })
-    } catch (err) {
-      console.log("err", err)
-      setState({ ...state, loading: "failed" })
-    }
+
   }
 
   const updateLocation = ({ lat, lng }: { lat: number; lng: number }) => {
     setState({ ...state, lat: lat, lng: lng })
   }
-
-  console.log("state", state)
 
   return (
     <div>
@@ -169,20 +152,25 @@ export default function Upload() {
       </div>
       <div className="flex justify-center mt-5">
         <div className="flex flex-col">
-        <button
-          onClick={() => uploadPhoto()}
-          className="font-normal mb-10 mt-10 m-1 py-1 px-3 hover:bg-blue-100 rounded outline-1 bg-blue-50 outline outline-blue-700"
-        >
-          Upload Photo
-        </button>
-        <div>
-        {state.loading === "loading" && (
-          <div className="flex flex-col ">
-            <Spinner className="flex justify-center" />
+          {
+          state.loading === "success" ? (
+            <div className="mt-10">Successfully uploaded</div>
+          ) : state.loading === "loading" ? (
+            <div className="flex flex-col mt-10">
+              <Spinner className="flex justify-center" />
+            </div>
+          ) : (
+            <button
+              onClick={() => uploadPhoto()}
+              className="font-normal mb-10 mt-10 m-1 py-1 px-3 rounded outline-1 bg-blue-50 outline outline-blue-700
+               hover:bg-blue-100 "
+            >
+              Upload Photo
+            </button>
+          )}
+          <div>
+            {}
           </div>
-        )}
-        {state.loading === "success" && <div>Successfully uploaded</div>}
-        </div>
         </div>
       </div>
 

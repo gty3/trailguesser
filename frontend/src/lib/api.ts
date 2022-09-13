@@ -12,6 +12,14 @@ interface LevelData {
     url: string
   }[]
 }
+interface PostPhotoParams {
+  id: string
+  trailName?: string
+  latLng: {
+    lat: number
+    lng: number
+  }
+}
 
 const apiGateway = import.meta.env.VITE_APIGATEWAY_NAME
 
@@ -45,29 +53,57 @@ export async function saveUserGame(level: string): Promise<void | undefined> {
 export async function guessRes({
   latLng,
   id,
-  level
+  level,
 }: {
   latLng: google.maps.LatLng
   id: string
   level: string
 }): Promise<GuessLocationReturn> {
-const shit = await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/guessLocation", {
-    body: {
-      latLng: latLng,
-      id: id,
-      level: level
+  const shit = await API.post(
+    apiGateway,
+    "/guessLocation",
+    {
+      body: {
+        latLng: latLng,
+        id: id,
+        level: level,
+      },
     }
-  })
-  console.log('shit', shit)
+  )
+  console.log("shit", shit)
   return shit
 }
 
-// export async function saveGame({
-//   level:
-// })
-
-export async function newGame({ level }: { level: string}): Promise<void> {
-  await API.post(import.meta.env.VITE_APIGATEWAY_NAME, "/newGame", {
-    level: level
+export async function newGame({ level }: { level: string }): Promise<void> {
+  await API.post(apiGateway, "/newGame", {
+    level: level,
   })
+}
+
+export async function uploadPhotoData(
+  uploadPhotoData: PostPhotoParams
+): Promise<string> {
+  try {
+    await API.post(apiGateway, "/savePhotoData", {
+      body: uploadPhotoData,
+    })
+    return "success"
+  } catch (err) {
+    console.log("err", err)
+    return "failed"
+  }
+}
+
+export async function saveEmail(
+  email: string
+): Promise<string> {
+  try {
+    await API.post(apiGateway, "/submitEmail", {
+      body: email,
+    })
+    return "success"
+  } catch (err) {
+    console.log("err", err)
+    return "failed"
+  }
 }

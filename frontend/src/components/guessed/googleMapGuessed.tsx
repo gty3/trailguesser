@@ -18,7 +18,7 @@ const GoogleMapGuessed = ({
 }) => {
 
   const [zoom, setZoom] = React.useState(1)
-  const [center, setCenter] = React.useState<LatLng>(actualData.actualLocation)
+  const [center, setCenter] = React.useState<LatLng>(actualData.center)
 
   const onIdle = (m: google.maps.Map) => {
     console.log("onIdle")
@@ -36,7 +36,7 @@ const GoogleMapGuessed = ({
           gestureHandling={"greedy"}
           center={center}
           onIdle={onIdle}
-          zoom={zoom}
+          zoom={actualData.zoom}
           style={{ flexGrow: "1", height: "100%" }}
         >
           <Marker position={marker} />

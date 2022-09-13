@@ -29,6 +29,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
             lng: { N: "" + latLng.lng },
           },
         },
+        time: { N: "" + Date.now() },
         ...(trailName && { trailName: { S: trailName } })
       },
       TableName: process.env.PHOTO_TABLE,

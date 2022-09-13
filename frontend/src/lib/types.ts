@@ -9,5 +9,14 @@ export interface GuessLocationReturn {
   actualLocation: LatLng
   distance: number
   points: number
-  center: LatLng | null
+  center: LatLng
+  zoom: number
+}
+
+export interface LevelState {
+  level: string
+  images: {
+    id: string
+    url: string
+  }[]
 }

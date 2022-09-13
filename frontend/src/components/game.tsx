@@ -3,22 +3,15 @@ import React, { useEffect, useState } from "react"
 import Spinner from "../components/spinner"
 import GoogleMap from "../components/googleMap"
 import { guessRes } from "../lib/api"
-import { GuessLocationReturn, LatLng } from "../lib/types"
+import { GuessLocationReturn, LatLng, LevelState } from "../lib/types"
 import Guessed from "./guessed"
-
 interface PhotoArray {
   id: string
   url: string
 }
 ;[]
 
-interface LevelState {
-  level: string
-  images: {
-    id: string
-    url: string
-  }[]
-}
+
 
 export default function Play({
   levelState,
@@ -62,7 +55,8 @@ export default function Play({
       distance: Math.round(resData.distance),
       points: resData.points,
       actualLocation: resData.actualLocation,
-      center: null,
+      center: resData.center,
+      zoom: resData.zoom
     })
     setGuessing(false)
   }
@@ -81,6 +75,7 @@ export default function Play({
     return (
       <>
         <Guessed
+          currentImageState={currentImageState}
           actualData={actualData}
           marker={marker}
           nextImage={nextImage}

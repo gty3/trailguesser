@@ -58,27 +58,67 @@ export const handler = async (
           Math.cos(guessLatRadian) *
           Math.cos(guessLngRadian - photoLngRadian)
     )
-  const points =
-    distance < 10
-      ? 5000
-      : distance < 50
-      ? 4750
-      : distance < 100
-      ? 4250
-      : distance < 150
-      ? 3750
-      : distance < 200
-      ? 3250
-      : distance < 400
-      ? 2000
-      : distance < 800
-      ? 750
-      : distance < 2000
-      ? 400
-      : distance < 3000
-      ? 200
-      : 0
 
+  let x =
+    (Math.cos(photoLatRadian) * Math.cos(photoLngRadian) +
+      Math.cos(guessLatRadian) * Math.cos(guessLngRadian)) /
+    2
+
+  let y =
+    (Math.cos(photoLatRadian) * Math.sin(photoLngRadian) +
+      Math.cos(guessLatRadian) * Math.sin(guessLngRadian)) /
+    2
+  let z = (Math.sin(photoLatRadian) + Math.sin(guessLatRadian)) / 2
+  let centralLongitude = Math.atan2(y, x)
+  let centralSquareRoot = Math.sqrt(x * x + y * y)
+  let centralLatitude = Math.atan2(z, centralSquareRoot)
+  const centerLatLng = {
+    lat: (centralLatitude * 180) / Math.PI,
+    lng: (centralLongitude * 180) / Math.PI,
+  }
+
+  const points =
+    5000 - Math.floor(distance) > 0 ? 5000 - Math.floor(distance) : 0
+  // const score = Math.floor((50000 / Math.ceil(distance)) * 10)
+  // distance < 1
+  //   ? 5000
+  //   : distance < 10
+  //   ? 4900
+  //   : distance < 50
+  //   ? 4750
+  //   : distance < 100
+  //   ? 4250
+  //   : distance < 150
+  //   ? 3750
+  //   : distance < 200
+  //   ? 3250
+  //   : distance < 400
+  //   ? 2000
+  //   : distance < 800
+  //   ? 750
+  //   : distance < 2000
+  //   ? 400
+  //   : distance < 3000
+  //   ? 200
+  //   : 0
+  const zoom =
+    distance < 20
+      ? 9
+      : distance < 80
+      ? 8
+      : distance < 400
+      ? 6
+      : distance < 750
+      ? 5
+      : distance < 1500
+      ? 4
+      : distance < 3000
+      ? 3
+      : distance < 6000
+      ? 2
+      : 1
+
+  // distance at 335 miles away looks great for zoom 6
   try {
     const putCommand = new UpdateItemCommand({
       // do i need to marshall? no; is it failing because that property doesn't exist yet...?
@@ -99,23 +139,25 @@ export const handler = async (
     })
     const putRes = await dbClient.send(putCommand)
   } catch (err) {
-    console.log('level didnt exist to update, updating', err)
+    console.log("level didnt exist to update, updating", err)
     const updateCommand = new UpdateItemCommand({
       ExpressionAttributeNames: {
         "#LS": "levels",
-        "#LE": level
+        "#LE": level,
       },
       Key: {
         id: {
           S: identityId,
         },
       },
-      ExpressionAttributeValues: marshall({ ":ld": { [id]: { distance: distance } }}),
+      ExpressionAttributeValues: marshall({
+        ":ld": { [id]: { distance: distance } },
+      }),
       UpdateExpression: "SET #LS.#LE = :ld",
       TableName: process.env.USER_GAMES,
     })
     const updateRes = await dbClient.send(updateCommand)
-    console.log('updateREs', updateRes)
+    console.log("updateREs", updateRes)
   }
 
   const res = {
@@ -123,7 +165,8 @@ export const handler = async (
     actualLocation: trailObj.latLng,
     distance: distance,
     points: points,
-    center: null,
+    center: centerLatLng,
+    zoom: zoom,
   }
 
   return {

@@ -1,20 +1,11 @@
-import { GuessLocationReturn, LatLng, LevelState } from "../lib/types"
-import GoogleMapGuessed from "./guessed/googleMapGuessed"
 
-export default function Guessed({
-  currentImageState,
-  actualData,
-  marker,
-  nextImage,
-}: {
-  currentImageState: number
-  actualData: GuessLocationReturn
-  marker: google.maps.LatLng
-  nextImage: () => void
-}) {
-  const { distance, points } = actualData
-  return (
-    <div className="bg-gray-100 h-screen">
+
+const Score = () => {
+
+
+ return (
+  <div>
+    {/* <div className="bg-gray-100 h-screen">
       <div className="flex justify-center pt-40 mb-2">
         Your guess was {distance} miles away
       </div>
@@ -33,10 +24,13 @@ export default function Guessed({
         onClick={nextImage}
         className="flex justify-center mt-20 bg-blue-600 m-1 rounded-md p-2 text-white"
       >
-        { (currentImageState === 4) ? "Menu" : "Next Trail" }
+        { (currentImageState === 4) ? "Score" : "Next Trail" }
       </button>
       </div>
 
-    </div>
-  )
+    </div> */}
+  </div>
+ )
 }
+
+export default Score
