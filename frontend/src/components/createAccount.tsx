@@ -61,7 +61,7 @@ const createAccount = ({
   if (!state.accountCreated) {
     // put ! to switch back
     return (
-      <div className="pt-32 flex items-center flex-col bg-gray-100 h-screen">
+      <div className="pt-32 flex items-center flex-col">
         <div className="mb-16 text-3xl">Create an account</div>
         <div className="flex flex-col">
           <div className="">
@@ -99,7 +99,7 @@ const createAccount = ({
     )
   } else {
     return (
-      <div className="pt-32 flex items-center flex-col bg-gray-100 h-screen">
+      <div className="pt-32 flex items-center flex-col">
         <div className="mb-16 text-3xl mx-6 flex">Account created</div>
         <div className="mt-6 mb-5">
           <button

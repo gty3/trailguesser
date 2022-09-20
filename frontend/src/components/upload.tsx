@@ -123,7 +123,7 @@ export default function Upload() {
   }
   
   return (
-    <div className="bg-gray-100 h-screen">
+    <div className="">
       <div className="flex flex-col">
         <div className="flex justify-center">
           <div className="flex flex-col ">

@@ -42,7 +42,7 @@ export default function UploadPage() {
     return <CreateAccount setPageState={setState}/>
   } else {
     return (
-      <div className="h-screen bg-gray-100">
+      <div className="">
       <div className="pt-10 flex justify-center flex-col items-center">
         <div className="m-16 text-2xl">Popular photos may receive compensation in the future</div>
       <button onClick={createAccount} className="flex bg-blue-600 text-white justify-center mx-8 p-1.5 cursor-pointer rounded-md px-3 text-2xl text-thin">

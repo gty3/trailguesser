@@ -14,8 +14,8 @@ export default function Guessed({
 }) {
   const { distance, points } = actualData
   return (
-    <div className="bg-gray-100 h-screen">
-      <div className="flex justify-center pt-40 mb-2">
+    <div className=" flex flex-col pt-24 justify-center">
+      <div className="flex justify-center mb-2">
         Your guess was {distance} miles away
       </div>
       <div className="flex justify-center mb-4">You get {points} points!</div>

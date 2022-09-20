@@ -33,11 +33,11 @@ export default function Home() {
 
   return (
     <div
-      className="bg-yellow-700 h-screen bg-cover"
+      className="h-screen bg-cover flex flex-col justify-center pb-12"
       style={{ backgroundImage: "url(finn.jpg)" }}
     >
       <div className="">
-        <div className="pt-48 px-4 flex justify-center text-7xl text-white italic">
+        <div className="px-4 flex justify-center text-7xl text-white italic">
           RIDE THE WORLD
         </div>
         <div className="flex justify-center text-white text-xl">
@@ -47,7 +47,7 @@ export default function Home() {
           <Link
             state={levelDataState && { ...levelDataState }}
             to="/play"
-            className="border px-8 rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400"
+            className="flex bg-blue-600 drop-shadow-xl text-white justify-center mx-8 px-10 p-2 cursor-pointer rounded-md text-2xl text-thin shadow-lg"
           >
             Play
           </Link>
@@ -55,7 +55,7 @@ export default function Home() {
         <div className="mt-32 flex justify-center">
           <Link
             to="/upload"
-            className="border rounded m-3 p-2 bg-white hover:bg-gray-200 focus:bg-gray-400"
+            className="flex bg-blue-600 text-white drop-shadow-xl justify-center mx-8 p-1.5 cursor-pointer rounded-md px-3 text-2xl text-thin"
           >
             Upload photos
           </Link>

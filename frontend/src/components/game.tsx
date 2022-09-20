@@ -92,7 +92,7 @@ export default function Play({
         <div
           className={
             (!mapOpen ? "hidden " : "") +
-            `md:visible md:p-10 md:h-52 md:w-52 md:hover:h-2/3 md:hover:bottom-0
+            `md:block md:p-10 md:h-52 md:w-52 md:hover:h-2/3 md:hover:bottom-0
              md:hover:w-2/3 md:hover:p-20 md:hover:pb-32 absolute bottom-16 right-0 h-72 w-screen`
           }
         >

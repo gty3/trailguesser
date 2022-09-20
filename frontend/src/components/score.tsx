@@ -5,7 +5,7 @@ const Score = () => {
 
  return (
   <div>
-    {/* <div className="bg-gray-100 h-screen">
+    {/* <div className="">
       <div className="flex justify-center pt-40 mb-2">
         Your guess was {distance} miles away
       </div>

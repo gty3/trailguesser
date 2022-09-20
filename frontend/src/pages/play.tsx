@@ -74,7 +74,7 @@ export default function Play() {
     return (
       <div
         onClick={() => setLevelState(levelState)}
-        className="flex bg-blue-600 text-white justify-center m-2 p-1 cursor-pointer rounded-md px-2 text-2xl text-thin"
+        className="flex bg-blue-600 drop-shadow-lg text-white justify-center m-2 p-1 cursor-pointer rounded-md px-2 text-2xl text-thin"
       >
         Play
       </div>
@@ -92,7 +92,7 @@ export default function Play() {
   } else {
     return (
       <>
-        <div className="bg-gray-100 h-screen">
+        <div className="">
           <div className="grid md:grid-flow-col md:pt-80 justify-items-center">
             <div className="">
               <img

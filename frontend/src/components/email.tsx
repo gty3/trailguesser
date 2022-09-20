@@ -19,7 +19,7 @@ const Email = () => {
 
   return (
     <>
-      <div className="pt-10 md:mt-32 flex justify-center bg-gray-100">
+      <div className="pt-10 md:mt-32 flex justify-center">
         <div className="flex flex-col w-96 mb-10">
           <div className="m-2">
             ⚠️ TrailGuesser is brand new! Get informed about new gameplay:
@@ -45,7 +45,6 @@ const Email = () => {
             </div>
         </div>
       </div>
-      {/* <div className="pt-2 pb-10 flex justify-center bg-gray-100"></div> */}
     </>
   )
 }
