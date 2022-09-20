@@ -30,17 +30,6 @@ export const handler = async (
 
   const dbClient = new DynamoDBClient({})
 
-  // const input = {
-  //   Key: { id: { S: id } },
-  //   TableName: process.env.PHOTO_TABLE,
-  // }
-  // const getCommand = new GetItemCommand(input)
-  // const itemRes = await dbClient.send(getCommand)
-  // if (!itemRes.Item) {
-  //   console.log("no itemRes.Item")
-  //   return err
-  // }
-
   const timeNow = Date.now()
   try {
     const putCommand = new UpdateItemCommand({

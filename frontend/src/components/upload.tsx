@@ -127,8 +127,8 @@ export default function Upload() {
       <div className="flex flex-col">
         <div className="flex justify-center">
           <div className="flex flex-col ">
-            <div className="h-64 w-screen md:w-96 mt-2 flex justify-center">
-              <img className="h-64" src={state.displayURL} />
+            <div className=" w-screen md:w-96 mt-2 flex justify-center">
+              <img className="h-40" src={state.displayURL} />
             </div>
             <div className="flex justify-center">
               <input
