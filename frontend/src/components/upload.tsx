@@ -5,6 +5,8 @@ import { v4 } from "uuid"
 import Spinner from "../components/spinner"
 import GoogleMapUpload from "../components/googleMapUpload"
 import { uploadPhotoData } from "../lib/api"
+import exifr from "exifr"
+
 interface State {
   loading: string
   displayURL?: string
@@ -21,7 +23,7 @@ export default function Upload() {
     lat: null,
     lng: null,
     s3Loading: false,
-    error: "",
+    error: "Drop a pin of the photo location",
     uuid: "",
   })
   const mapRef = useRef()
@@ -41,17 +43,24 @@ export default function Upload() {
       console.log("no image")
       return
     }
+    let latitude, longitude
     const uuid = v4()
-    
+    try {
+      ;({ latitude, longitude } = await exifr.gps(e.target.files[0]))
+    } catch {
+      ;(latitude = null), (longitude = null)
+    }
+    console.log("#@@EWA", latitude, longitude)
+
     setState({
       ...state,
       displayURL: URL.createObjectURL(e.target.files[0]),
       loading: "",
       s3Loading: true,
       uuid: uuid,
-      error: "",
-      // lat: null,
-      // lng: null,
+      // error: "",
+      lat: latitude,
+      lng: longitude,
     })
     console.log("UUID photoselected", uuid)
     try {
@@ -72,7 +81,10 @@ export default function Upload() {
       console.log("no env")
       return
     }
-    if (!imageRef.current?.files || (imageRef.current?.files && imageRef.current?.files?.length === 0)) {
+    if (
+      !imageRef.current?.files ||
+      (imageRef.current?.files && imageRef.current?.files?.length === 0)
+    ) {
       console.log("no image")
       setState({ ...state, error: "No file detected, try again" })
       return
@@ -113,35 +125,35 @@ export default function Upload() {
     })
     imageRef.current.value = ""
     if (trailNameRef.current) trailNameRef.current.value = ""
-
   }
 
-  console.log('imageRef', imageRef)
+  console.log("imageRef", imageRef)
 
   const updateLocation = ({ lat, lng }: { lat: number; lng: number }) => {
-    setState({ ...state, lat: lat, lng: lng })
+    setState({ ...state, lat: lat, lng: lng, loading: "" })
   }
-  
+
   return (
     <div className="">
       <div className="flex flex-col">
         <div className="flex justify-center">
           <div className="flex flex-col ">
-            <div className=" w-screen md:w-96 mt-2 flex justify-center">
+            <div className=" w-screen md:w-96 flex justify-center">
               <img className="h-40" src={state.displayURL} />
             </div>
             <div className="flex justify-center">
               <input
+                multiple={true}
                 id="file-upload"
                 onChange={(e) => photoSelected(e)}
                 type="file"
-                className="bg-blue-100 rounded py-1 px-3 m-1 w-80 text-lg text-slate-700"
+                className="bg-blue-100 rounded py-1 px-3 w-80 text-lg text-slate-700"
                 ref={imageRef}
               ></input>
             </div>
           </div>
         </div>
-        <div className=" mt-2">
+        {/* <div className="">
           <div className="flex flex-col items-center">
             <input
               type="text"
@@ -150,33 +162,30 @@ export default function Upload() {
               ref={trailNameRef}
             ></input>
             <div className="w-screen h-80 md:w-96 mt-2">
-              <div className="mb-2 flex justify-center">
-                Drop a pin of the photo location
-              </div>
-
               <GoogleMapUpload state={state} updateLocation={updateLocation} />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
-      <div className="flex justify-center mt-5">
+      <div className="flex justify-center">
         <div className="flex flex-col">
-
           {state.loading === "success" ? (
-            <div className="mt-10 text-lg">Successfully uploaded, select another file</div>
+            <div className="mt-3 text-lg">
+              Successfully uploaded, select another file
+            </div>
           ) : state.loading === "loading" ? (
             <div className="flex flex-col mt-10">
               <Spinner className="flex justify-center" />
             </div>
-          ) : (
+          ) : state.loading !== "" ? (
             <button
               onClick={() => uploadPhoto()}
               className="flex bg-blue-600 mt-6 text-white justify-center p-1.5 cursor-pointer rounded-md px-3 text-2xl text-thin"
             >
               Upload Photo
             </button>
-          )}
-          <div className="mt-1.5 text-lg">{state.error}</div>
+          ) : null}
+          {/* <div className="mt-1.5 text-lg">{state.error}</div> */}
         </div>
       </div>
 
