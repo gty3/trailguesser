@@ -2,14 +2,13 @@ import { API } from "@aws-amplify/api"
 import React, { useEffect, useState } from "react"
 import Spinner from "../components/spinner"
 import GoogleMap from "../components/googleMap"
-import { guessRes } from "../lib/api"
+import { guessRes, newGame } from "../lib/api"
 import { GuessLocationReturn, LatLng, LevelState } from "../lib/types"
 import Guessed from "./guessed"
-interface PhotoArray {
+interface PhotoObj {
   id: string
   url: string
 }
-;[]
 
 export default function Play({
   levelState,
@@ -68,7 +67,16 @@ export default function Play({
     }
   }
 
-  const currentPhoto: PhotoArray = imagesObjArray[currentImageState]
+  const currentPhoto: PhotoObj = imagesObjArray[currentImageState]
+
+  useEffect(() => {
+    (async () => {
+      console.log('newGame fn called')
+      await newGame({
+      level: levelState.level,
+      photoId: currentPhoto.id
+    })})()
+  }, [currentImageState])
 
   if (actualData && marker) {
     return (

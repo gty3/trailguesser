@@ -45,6 +45,7 @@ export const handler = async (
     console.log("no itemRes.Item")
     return err
   }
+
   const trailObj = unmarshall(itemRes.Item)
   const photoLatRadian = trailObj.latLng.lat / (180 / Math.PI)
   const photoLngRadian = trailObj.latLng.lng / (180 / Math.PI)
@@ -80,27 +81,7 @@ export const handler = async (
   const points =
     5000 - Math.floor(distance) > 0 ? 5000 - Math.floor(distance) : 0
   // const score = Math.floor((50000 / Math.ceil(distance)) * 10)
-  // distance < 1
-  //   ? 5000
-  //   : distance < 10
-  //   ? 4900
-  //   : distance < 50
-  //   ? 4750
-  //   : distance < 100
-  //   ? 4250
-  //   : distance < 150
-  //   ? 3750
-  //   : distance < 200
-  //   ? 3250
-  //   : distance < 400
-  //   ? 2000
-  //   : distance < 800
-  //   ? 750
-  //   : distance < 2000
-  //   ? 400
-  //   : distance < 3000
-  //   ? 200
-  //   : 0
+
   const zoom =
     distance < 20
       ? 9
@@ -118,32 +99,15 @@ export const handler = async (
       ? 2
       : 1
 
-  // distance at 335 miles away looks great for zoom 6
+  const timeNow = Date.now()
   try {
-    const putCommand = new UpdateItemCommand({
-      // do i need to marshall? no; is it failing because that property doesn't exist yet...?
+    const updateLevel = new UpdateItemCommand({
       ExpressionAttributeNames: {
         "#PH": id,
         "#LS": "levels",
         "#LE": level,
-        // "#DI": "distance"
-      },
-      Key: {
-        id: {
-          S: identityId,
-        },
-      },
-      ExpressionAttributeValues: marshall({ ":di": { distance: distance } }),
-      UpdateExpression: "SET #LS.#LE.#PH = :di",
-      TableName: process.env.USER_GAMES,
-    })
-    const putRes = await dbClient.send(putCommand)
-  } catch (err) {
-    console.log("level didnt exist to update, updating", err)
-    const updateCommand = new UpdateItemCommand({
-      ExpressionAttributeNames: {
-        "#LS": "levels",
-        "#LE": level,
+        "#DI": "distance",
+        "#EN": "end",
       },
       Key: {
         id: {
@@ -151,13 +115,34 @@ export const handler = async (
         },
       },
       ExpressionAttributeValues: marshall({
-        ":ld": { [id]: { distance: distance } },
+        ":di": distance,
+        ":ti": timeNow,
       }),
-      UpdateExpression: "SET #LS.#LE = :ld",
+      UpdateExpression: "SET #LS.#LE.#PH.#DI = :di, #LS.#LE.#PH.#EN = :ti",
       TableName: process.env.USER_GAMES,
     })
-    const updateRes = await dbClient.send(updateCommand)
-    console.log("updateREs", updateRes)
+    const putRes = await dbClient.send(updateLevel)
+  } catch (err) {
+    /* now that I added newGame api, this should never occur but ill leave it, this will overwrite start time tho */
+    console.log("/guessLocation Error", err)
+  //   const updateCommand = new UpdateItemCommand({
+  //     ExpressionAttributeNames: {
+  //       "#LS": "levels",
+  //       "#LE": level,
+  //     },
+  //     Key: {
+  //       id: {
+  //         S: identityId,
+  //       },
+  //     },
+  //     ExpressionAttributeValues: marshall({
+  //       ":ld": { [id]: { distance: distance, end: timeNow } },
+  //     }),
+  //     UpdateExpression: "SET #LS.#LE = :ld",
+  //     TableName: process.env.USER_GAMES,
+  //   })
+  //   const updateRes = await dbClient.send(updateCommand)
+  //   console.log("updateREs", updateRes)
   }
 
   const res = {

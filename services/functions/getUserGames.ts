@@ -25,7 +25,6 @@ export const handler = async (
   const getCommand = new GetItemCommand(getInput)
   try {
     const itemRes = await dbClient.send(getCommand)
-    console.log("itemRes getUserGames get", itemRes)
 
     if (itemRes.Item) {
       const unmarshalledItem = unmarshall(itemRes.Item)
@@ -40,7 +39,6 @@ export const handler = async (
         TableName: process.env.USER_GAMES,
       }
       const putCommand = new PutItemCommand(putInput)
-      console.log("pur res")
       await dbClient.send(putCommand)
       return {
         statusCode: 200,

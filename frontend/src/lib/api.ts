@@ -18,7 +18,7 @@ interface PostPhotoParams {
   latLng: {
     lat: number
     lng: number
-  },
+  }
   userId?: string
 }
 
@@ -60,24 +60,29 @@ export async function guessRes({
   id: string
   level: string
 }): Promise<GuessLocationReturn> {
-  const shit = await API.post(
-    apiGateway,
-    "/guessLocation",
-    {
-      body: {
-        latLng: latLng,
-        id: id,
-        level: level,
-      },
-    }
-  )
+  const shit = await API.post(apiGateway, "/guessLocation", {
+    body: {
+      latLng: latLng,
+      id: id,
+      level: level,
+    },
+  })
   console.log("shit", shit)
   return shit
 }
 
-export async function newGame({ level }: { level: string }): Promise<void> {
+export async function newGame({
+  level,
+  photoId,
+}: {
+  level: string
+  photoId: string
+}): Promise<void> {
   await API.post(apiGateway, "/newGame", {
-    level: level,
+    body: {
+      level: level,
+      id: photoId,
+    },
   })
 }
 
@@ -95,9 +100,7 @@ export async function uploadPhotoData(
   }
 }
 
-export async function saveEmail(
-  email: string
-): Promise<string> {
+export async function saveEmail(email: string): Promise<string> {
   try {
     await API.post(apiGateway, "/submitEmail", {
       body: email,

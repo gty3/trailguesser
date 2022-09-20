@@ -44,7 +44,7 @@ export default function UploadPage() {
     return (
       <div className="">
       <div className="pt-10 flex justify-center flex-col items-center">
-        <div className="m-16 text-2xl">Popular photos may receive compensation in the future</div>
+        <div className="my-16 mx-8 text-2xl">Photos may receive compensation in the future</div>
       <button onClick={createAccount} className="flex bg-blue-600 text-white justify-center mx-8 p-1.5 cursor-pointer rounded-md px-3 text-2xl text-thin">
           Create an account before uploading photos
       </button>

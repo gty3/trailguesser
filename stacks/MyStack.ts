@@ -109,6 +109,7 @@ export function MyStack({ stack }: StackContext) {
       // },
       // "GET /adminGetUserGames": "functions/adminGetUserGames.handler",
       "POST /submitEmail": "functions/submitEmail.handler",
+      "POST /newGame": "functions/newGame.handler",
     },
   })
 

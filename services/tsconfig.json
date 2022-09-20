@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["functions", "triggers/autoVerifyTrigger.ts"],
+  "include": ["functions", "triggers/autoConfirmTrigger.ts"],
   "compilerOptions": {
     "module": "esnext",
     "target": "es2017",
