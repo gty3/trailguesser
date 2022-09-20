@@ -22,6 +22,7 @@ export default function Play({
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [actualData, setActualData] = useState<GuessLocationReturn>()
   const [guessing, setGuessing] = useState("")
+  const [mapOpen, setMapOpen] = useState(true)
 
   const imagesObjArray = levelState.images
 
@@ -82,36 +83,59 @@ export default function Play({
     )
   } else {
     return (
-      <div className="bg-gray-100 h-screen">
-        {levelState.images.length > 0 && (
-          <img src={currentPhoto.url} className="h-screen object-cover" />
-        )}
-
+      <div className="">
+        <img
+          src={currentPhoto.url}
+          className="h-screen object-cover"
+        />
+        <div className="">
         <div
-          className="md:p-10 md:h-52 md:w-52 md:hover:h-2/3 md:hover:bottom-0 md:hover:w-2/3 md:hover:p-20 md:hover:pb-32
-            absolute bottom-10 right-0 h-72 w-full pb-8"
+          className={
+            (!mapOpen ? "hidden " : "") +
+            `md:visible md:p-10 md:h-52 md:w-52 md:hover:h-2/3 md:hover:bottom-0
+             md:hover:w-2/3 md:hover:p-20 md:hover:pb-32 absolute bottom-16 right-0 h-72 w-screen`
+          }
         >
-          {levelState.images.length > 0 && (
-            <GoogleMap
-              click={onClick}
-              marker={marker}
-              actualData={actualData}
-            />
-          )}
+          <GoogleMap click={onClick} marker={marker} actualData={actualData} />
+          <button
+                onClick={submitGuess}
+                className="md:block w-full hidden justify-center p-2 text-lg mt-2  bg-blue-600 text-white rounded"
+              >
+                {guessing === "loading" ? (
+                  <Spinner className="pb-2 flex justify-center" />
+                ) : marker ? (
+                  "Guess!"
+                ) : (
+                  "Place a marker"
+                )}
+              </button>
+        </div>
+
+        <div className=" md:flex md:relative bottom-4 absolute w-screen">
           <div className="flex justify-center">
             <button
-              onClick={submitGuess}
-              className="z-10 w-32 flex justify-center p-2 m-1 mt-4  bg-blue-600 text-white rounded"
+              className="md:hidden w-32 flex justify-center p-2 mt-2 mr-8 bg-blue-600 text-white rounded"
+              onClick={() => setMapOpen(!mapOpen)}
             >
-              {guessing === "loading" ? (
-                <Spinner className="pb-1" />
-              ) : marker ? (
-                "Guess!"
-              ) : (
-                "Place a marker"
-              )}
+              {" "}
+              {mapOpen ? "Hide map" : "Show map"}
             </button>
+            {mapOpen && (
+              <button
+                onClick={submitGuess}
+                className="md:hidden w-32 flex justify-center p-2  mt-2  bg-blue-600 text-white rounded"
+              >
+                {guessing === "loading" ? (
+                  <Spinner className="pb-1" />
+                ) : marker ? (
+                  "Guess!"
+                ) : (
+                  "Place a marker"
+                )}
+              </button>
+            )}
           </div>
+        </div>
         </div>
       </div>
     )

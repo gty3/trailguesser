@@ -9,6 +9,7 @@ import {
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront"
 import * as iam from "aws-cdk-lib/aws-iam"
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins"
+import { aws_cognito as cognito } from "aws-cdk-lib"
 
 export function MyStack({ stack }: StackContext) {
   const bucket = new Bucket(stack, "Bucket", {
@@ -30,10 +31,10 @@ export function MyStack({ stack }: StackContext) {
   })
 
   const emailsTable = new Table(stack, "EmailsTable", {
-    fields: { 
-      email: "string"
+    fields: {
+      email: "string",
     },
-    primaryIndex: { partitionKey: "email" }
+    primaryIndex: { partitionKey: "email" },
   })
 
   const userGames = new Table(stack, "UserGames", {
@@ -57,7 +58,28 @@ export function MyStack({ stack }: StackContext) {
     primaryIndex: { partitionKey: "id" },
   })
 
-  const auth = new Auth(stack, "Auth")
+  const auth = new Auth(stack, "Auth2", {
+    triggers: { preSignUp: "triggers/autoConfirmTrigger.handler" },
+    cdk: {
+      userPool: {
+        signInAliases: { email: true },
+        passwordPolicy: {
+          minLength: 7,
+          requireSymbols: false,
+          requireUppercase: false,
+        },
+      },
+    },
+  })
+
+  const cfnUserPoolGroup = new cognito.CfnUserPoolGroup(
+    stack,
+    "UserPoolGroup",
+    {
+      userPoolId: auth.userPoolId,
+      groupName: "admin",
+    }
+  )
 
   const api = new Api(stack, "api", {
     defaults: {
@@ -80,16 +102,23 @@ export function MyStack({ stack }: StackContext) {
       "GET /getUserGames": "functions/getUserGames.handler",
       "GET /getTrailPhoto": "functions/getTrailPhoto.handler",
       "POST /savePhotoData": "functions/savePhotoData.handler",
-      "GET /getAllPhotos": {
-        function: {
-          handler: "functions/getAllPhotos.handler"
-        },
-      },
-      "POST /submitEmail": "functions/submitEmail.handler"
+      // "GET /getAllPhotos": {
+      //   function: {
+      //     handler: "functions/getAllPhotos.handler",
+      //   },
+      // },
+      // "GET /adminGetUserGames": "functions/adminGetUserGames.handler",
+      "POST /submitEmail": "functions/submitEmail.handler",
     },
   })
 
-  api.attachPermissions([bucket, photoTable, levelsTable, userGames, emailsTable])
+  api.attachPermissions([
+    bucket,
+    photoTable,
+    levelsTable,
+    userGames,
+    emailsTable,
+  ])
 
   const iamResource = `arn:aws:execute-api:${stack.region}:${stack.account}:${api.httpApiId}`
 

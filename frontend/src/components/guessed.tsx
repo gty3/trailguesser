@@ -31,7 +31,7 @@ export default function Guessed({
       <div className="flex justify-center">
       <button
         onClick={nextImage}
-        className="flex justify-center mt-20 bg-blue-600 m-1 rounded-md p-2 text-white"
+        className="flex justify-center mt-20 bg-blue-600 m-1 text-lg rounded-md p-2 text-white"
       >
         { (currentImageState === 4) ? "Menu" : "Next Trail" }
       </button>

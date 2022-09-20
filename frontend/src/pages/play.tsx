@@ -28,7 +28,7 @@ export default function Play() {
 
   const location = useLocation()
   const locationState = location.state as LocationState
-  console.log("levelState", levelState)
+  
   useEffect(() => {
     if (location && location.state) {
       setLevelState(locationState)
@@ -83,11 +83,11 @@ export default function Play() {
 
   if (parseInt(levelState.level)) {
     return (
-      <div>
-        <div>
+      // <div>
+      //   <div>
           <Game levelState={levelState} setLevelState={setLevelState} />
-        </div>
-      </div>
+      //   </div>
+      // </div>
     )
   } else {
     return (

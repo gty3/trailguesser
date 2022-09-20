@@ -7,13 +7,14 @@ interface EventBody {
   latLng: {
     lat: number
     lng: number
-  }
+  },
+  userId: string
 }
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const err = { statusCode: 500 }
   const eventBody: EventBody = JSON.parse(event.body ?? "")
-  const { id, trailName, latLng } = eventBody
+  const { id, trailName, latLng, userId } = eventBody
   if (!process.env.PHOTO_TABLE) {
     console.log("no table env")
     return err
@@ -30,7 +31,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
           },
         },
         time: { N: "" + Date.now() },
-        ...(trailName && { trailName: { S: trailName } })
+        ...(trailName && { trailName: { S: trailName } }),
+        userId: { S: userId }
       },
       TableName: process.env.PHOTO_TABLE,
     }
