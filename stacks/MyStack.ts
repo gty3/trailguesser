@@ -140,7 +140,7 @@ export function MyStack({ stack }: StackContext) {
     // }),
   ])
 
-  new ViteStaticSite(stack, "ReactSite", {
+  const site = new ViteStaticSite(stack, "ReactSite", {
     path: "frontend",
     environment: {
       VITE_REGION: stack.region,
@@ -167,5 +167,6 @@ export function MyStack({ stack }: StackContext) {
   stack.addOutputs({
     ApiEndpoint: api.url,
     dist: dist.domainName,
+    url: site.url
   })
 }

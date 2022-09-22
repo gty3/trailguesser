@@ -1,3 +1,4 @@
+
 export interface IAMAuthorizer {
   authorizer: {
     jwt?: {
@@ -12,7 +13,8 @@ export interface IAMAuthorizer {
     },
     iam: {
       cognitoIdentity: {
-        identityId: string
+        identityId: string,
+        amr: string[]
       }
     }
   }

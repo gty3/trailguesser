@@ -73,7 +73,6 @@ export default function Upload() {
 
       try {
         sendToS3 = Storage.put(uuidWfileType, file)
-        console.log("sendToS3", sendToS3)
       } catch (err) {
         console.log(err)
       }
@@ -84,23 +83,21 @@ export default function Upload() {
       imageArray: imageArray,
       noExifArray: noLatLngArray,
     })
-    // const dbLoading = await sendToDb
     await sendToS3
-    // console.log("s3Loading", s3Loading)
     setS3loading("success")
   }
 
   const shiftExifArray = () => {
-    setState({...state, noExifArray: state.noExifArray.slice(1)})
-
+    setState({ ...state, noExifArray: state.noExifArray.slice(1) })
   }
-
-  console.log("statenoeix", state.noExifArray)
 
   if (state.noExifArray.length > 0) {
     return (
       <div>
-        <NoExifComponent image={state.noExifArray[0]} shiftExifArray={shiftExifArray} />
+        <NoExifComponent
+          image={state.noExifArray[0]}
+          shiftExifArray={shiftExifArray}
+        />
       </div>
     )
   } else {
@@ -111,10 +108,14 @@ export default function Upload() {
             <div className="flex flex-col ">
               <div className=" w-screen md:w-96 justify-center grid grid-cols-3">
                 {state.imageArray.map((img) => (
-                  <img key={img.uuid} className="h-20 my-4 mx-3" src={img.thumbnailUrl} />
+                  <img
+                    key={img.uuid}
+                    className="h-20 my-4 mx-3"
+                    src={img.thumbnailUrl}
+                  />
                 ))}
               </div>
-              <div className="flex mt-40 justify-center">
+              <div className="flex mt-60 justify-center">
                 <input
                   multiple={true}
                   id="file-upload"

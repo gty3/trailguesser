@@ -79,7 +79,7 @@ export const handler = async (
   }
 
   const points =
-    5000 - Math.floor(distance) > 0 ? 5000 - Math.floor(distance) : 0
+    Math.floor(5000 / ((1/100) * Math.floor(distance) + 1))
   // const score = Math.floor((50000 / Math.ceil(distance)) * 10)
 
   const zoom =

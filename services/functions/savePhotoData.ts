@@ -20,8 +20,12 @@ export const handler = async (
   const err = { statusCode: 500 }
   const eventBody: EventBody = JSON.parse(event.body ?? "")
   const { id, trailName, latLng } = eventBody
+
   const identityId =
-    event.requestContext.authorizer.iam.cognitoIdentity.identityId
+    event.requestContext.authorizer.iam.cognitoIdentity.amr[0] ===
+    "authenticated"
+      ? event.requestContext.authorizer.iam.cognitoIdentity.amr[2].split(":")[2]
+      : event.requestContext.authorizer.iam.cognitoIdentity.identityId
 
   if (!process.env.PHOTO_TABLE) {
     console.log("no table env")
