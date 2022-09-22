@@ -2,19 +2,28 @@ import * as React from "react"
 import { Wrapper, Status } from "@googlemaps/react-wrapper"
 import GoogleMapChild from "./googleMapChild"
 import { API } from "@aws-amplify/api"
-import { LatLng } from "../lib/types"
-
+import { Image, LatLng } from "../lib/types"
+import { uploadPhotoData } from "../lib/api"
 const render = (status: Status) => {
   return <h1>{status}</h1>
 }
 
-const GoogleMapUpload = ({ updateLocation, state }: any) => {
+const GoogleMapUpload = ({ image }: { image: Image }) => {
+  const updateLocation = ({ lat, lng }: { lat: number; lng: number }) => {
+    uploadPhotoData({
+      id: image.uuid,
+      latLng: {
+        lat: lat,
+        lng: lng,
+      },
+    })
+  }
 
-  const latLng = state.lat ? { lat: state.lat, lng: state.lng } : undefined
-  // const [marker, setMarker] = React.useState<LatLng>({
-  //   lat: state.lat,
-  //   lng: state.lng,
-  // })
+  // const latLng = state.lat ? { lat: state.lat, lng: state.lng } : undefined
+  const [marker, setMarker] = React.useState<LatLng>({
+    lat: 0,
+    lng: 0,
+  })
   const [zoom, setZoom] = React.useState(2) // initial zoom
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 38.91090486163843,
@@ -23,8 +32,13 @@ const GoogleMapUpload = ({ updateLocation, state }: any) => {
 
   const onClick = (e: google.maps.MapMouseEvent) => {
     // avoid directly mutating state
-    // setMarker({ lat: e.latLng?.lat()!, lng: e.latLng?.lng()! })
-    updateLocation({ lat: e.latLng?.lat(), lng: e.latLng?.lng() })
+    setMarker({ lat: e.latLng?.lat()!, lng: e.latLng?.lng()! })
+    updateLocation({ lat: e.latLng?.lat()!, lng: e.latLng?.lng()! })
+  }
+
+  const latLng = {
+    lat: 0,
+    lng: 0
   }
 
   const onIdle = (m: google.maps.Map) => {
@@ -33,7 +47,6 @@ const GoogleMapUpload = ({ updateLocation, state }: any) => {
     // setZoom(m.getZoom()!)
     // setCenter(m.getCenter()!.toJSON())
   }
-  console.log("state", state)
   // console.log("marker", marker)
 
   return (
@@ -49,7 +62,7 @@ const GoogleMapUpload = ({ updateLocation, state }: any) => {
         zoom={zoom}
         style={{ flexGrow: "1", height: "100%" }}
       >
-        <Marker position={latLng} />
+        <Marker position={marker} />
       </GoogleMapChild>
     </Wrapper>
   )

@@ -4,6 +4,12 @@ export interface LatLng {
   lng: number
 }
 
+export interface Image {
+  uuid: string
+  thumbnailUrl?: string
+  file?: File
+}
+
 export interface GuessLocationReturn {
   guessLocation?: LatLng
   actualLocation: LatLng

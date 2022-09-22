@@ -1,5 +1,9 @@
-import { APIGatewayProxyHandlerV2 } from "aws-lambda"
+import {
+  APIGatewayProxyEventV2WithRequestContext,
+  APIGatewayProxyHandlerV2,
+} from "aws-lambda"
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb"
+import { IAMAuthorizer } from "lib/types"
 
 interface EventBody {
   id: string
@@ -7,14 +11,18 @@ interface EventBody {
   latLng: {
     lat: number
     lng: number
-  },
-  userId: string
+  }
 }
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler = async (
+  event: APIGatewayProxyEventV2WithRequestContext<IAMAuthorizer>
+) => {
   const err = { statusCode: 500 }
   const eventBody: EventBody = JSON.parse(event.body ?? "")
-  const { id, trailName, latLng, userId } = eventBody
+  const { id, trailName, latLng } = eventBody
+  const identityId =
+    event.requestContext.authorizer.iam.cognitoIdentity.identityId
+
   if (!process.env.PHOTO_TABLE) {
     console.log("no table env")
     return err
@@ -31,8 +39,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
           },
         },
         time: { N: "" + Date.now() },
-        ...(trailName && { trailName: { S: trailName } }),
-        userId: { S: userId }
+        userId: { S: identityId },
       },
       TableName: process.env.PHOTO_TABLE,
     }
@@ -43,11 +50,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     return err
   }
 
-
-
   return {
     statusCode: 200,
-    headers: { "Content-Type": "text/plain" },
-    body: `Hello, World! Your request was received at ${event.requestContext.time}.`,
   }
 }

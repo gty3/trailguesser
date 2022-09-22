@@ -6,190 +6,139 @@ import Spinner from "../components/spinner"
 import GoogleMapUpload from "../components/googleMapUpload"
 import { uploadPhotoData } from "../lib/api"
 import exifr from "exifr"
+import { Image } from "../lib/types"
+import NoExifComponent from "./noExif"
 
 interface State {
-  loading: string
-  displayURL?: string
-  lat: number | null
-  lng: number | null
-  s3Loading: boolean
-  error: string
-  uuid: string
+  page: Image | null
+  // loading: string
+  imageArray: Image[]
+  noExifArray: Image[]
 }
 
 export default function Upload() {
+  /* I seperated out s3loading state because it was setting old state if in the other setState */
+  const [s3loading, setS3loading] = useState<string>()
+  // const [loading, setLoading] = useState<string>()
   const [state, setState] = useState<State>({
-    loading: "",
-    lat: null,
-    lng: null,
-    s3Loading: false,
-    error: "Drop a pin of the photo location",
-    uuid: "",
+    // loading: "",
+    imageArray: [],
+    noExifArray: [],
+    page: null,
   })
+  // const loadingRef = useRef(null)
+  // loadingRef.current = s3loading ?
   const mapRef = useRef()
   const imageRef = useRef<HTMLInputElement>(null)
-  const trailNameRef = useRef<HTMLInputElement>(null)
 
   const photoSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    // setLoading("loading")
+    setS3loading("loading")
     if (!e.target.files) {
       console.log("no files selected")
       return
     }
-    if (!trailNameRef.current) {
-      console.log("ref error, wtf")
-      return
+
+    const noLatLngArray = []
+    const imageArray = []
+    let sendToS3, sendToDb
+
+    for (const file of e.target.files) {
+      let latitude, longitude
+      const uuid = v4()
+      const fileType = file.name.split(".").pop()
+      const uuidWfileType = uuid + "." + fileType
+      imageArray.push({
+        thumbnailUrl: URL.createObjectURL(file),
+        uuid: uuidWfileType,
+      })
+
+      try {
+        ;({ latitude, longitude } = await exifr.gps(file))
+        sendToDb = uploadPhotoData({
+          id: uuidWfileType,
+          latLng: {
+            lat: latitude,
+            lng: longitude,
+          },
+        })
+      } catch {
+        noLatLngArray.push({
+          thumbnailUrl: URL.createObjectURL(file),
+          uuid: uuidWfileType,
+          file: file,
+        })
+        ;(latitude = null), (longitude = null)
+      }
+
+      try {
+        sendToS3 = Storage.put(uuidWfileType, file)
+        console.log("sendToS3", sendToS3)
+      } catch (err) {
+        console.log(err)
+      }
     }
-    if (!imageRef.current || !imageRef.current.files) {
-      console.log("no image")
-      return
-    }
-    let latitude, longitude
-    const uuid = v4()
-    try {
-      ;({ latitude, longitude } = await exifr.gps(e.target.files[0]))
-    } catch {
-      ;(latitude = null), (longitude = null)
-    }
-    console.log("#@@EWA", latitude, longitude)
 
     setState({
       ...state,
-      displayURL: URL.createObjectURL(e.target.files[0]),
-      loading: "",
-      s3Loading: true,
-      uuid: uuid,
-      // error: "",
-      lat: latitude,
-      lng: longitude,
+      imageArray: imageArray,
+      noExifArray: noLatLngArray,
     })
-    console.log("UUID photoselected", uuid)
-    try {
-      const fileType = imageRef.current.files[0].name.split(".").pop()
-      const uuidWfileType = uuid + "." + fileType
-      const sendToS3 = await Storage.put(
-        uuidWfileType,
-        imageRef.current.files[0]
-      )
-      /* cannot set state here, fucks with shit */
-    } catch (err) {
-      console.log(err)
-    }
+    // const dbLoading = await sendToDb
+    await sendToS3
+    // console.log("s3Loading", s3Loading)
+    setS3loading("success")
   }
 
-  const uploadPhoto = async () => {
-    if (!import.meta.env.VITE_APIGATEWAY_NAME) {
-      console.log("no env")
-      return
-    }
-    if (
-      !imageRef.current?.files ||
-      (imageRef.current?.files && imageRef.current?.files?.length === 0)
-    ) {
-      console.log("no image")
-      setState({ ...state, error: "No file detected, try again" })
-      return
-    }
-    if (!state.lat || !state.lng) {
-      setState({ ...state, error: "Drop a pin of the photo location" })
-      return
-    }
-    let user
-    try {
-      const auth = await Auth.currentAuthenticatedUser()
-      user = auth.username
-    } catch {
-      const unauth = await Auth.currentUserCredentials()
-      user = unauth.identityId
-    }
-    console.log("userId", user)
-    setState({ ...state, loading: "loading" })
-    const fileType = imageRef.current.files[0].name.split(".").pop()
-    const uuidWfileType = state.uuid + "." + fileType
+  const shiftExifArray = () => {
+    setState({...state, noExifArray: state.noExifArray.slice(1)})
 
-    const successString = await uploadPhotoData({
-      id: uuidWfileType,
-      latLng: {
-        lat: state.lat,
-        lng: state.lng,
-      },
-      trailName: trailNameRef.current?.value,
-      ...(user && { userId: user }),
-    })
-    setState({
-      loading: successString,
-      lat: null,
-      lng: null,
-      s3Loading: false,
-      error: "",
-      uuid: "",
-    })
-    imageRef.current.value = ""
-    if (trailNameRef.current) trailNameRef.current.value = ""
   }
 
-  console.log("imageRef", imageRef)
+  console.log("statenoeix", state.noExifArray)
 
-  const updateLocation = ({ lat, lng }: { lat: number; lng: number }) => {
-    setState({ ...state, lat: lat, lng: lng, loading: "" })
-  }
-
-  return (
-    <div className="">
-      <div className="flex flex-col">
-        <div className="flex justify-center">
-          <div className="flex flex-col ">
-            <div className=" w-screen md:w-96 flex justify-center">
-              <img className="h-40" src={state.displayURL} />
-            </div>
-            <div className="flex justify-center">
-              <input
-                multiple={true}
-                id="file-upload"
-                onChange={(e) => photoSelected(e)}
-                type="file"
-                className="bg-blue-100 rounded py-1 px-3 w-80 text-lg text-slate-700"
-                ref={imageRef}
-              ></input>
-            </div>
-          </div>
-        </div>
-        {/* <div className="">
-          <div className="flex flex-col items-center">
-            <input
-              type="text"
-              placeholder="Trail name, leave blank if unknown"
-              className="bg-blue-100 rounded py-1.5 px-3 m-3 placeholder-slate-600 w-80 text-lg"
-              ref={trailNameRef}
-            ></input>
-            <div className="w-screen h-80 md:w-96 mt-2">
-              <GoogleMapUpload state={state} updateLocation={updateLocation} />
-            </div>
-          </div>
-        </div> */}
+  if (state.noExifArray.length > 0) {
+    return (
+      <div>
+        <NoExifComponent image={state.noExifArray[0]} shiftExifArray={shiftExifArray} />
       </div>
-      <div className="flex justify-center">
+    )
+  } else {
+    return (
+      <div className="">
         <div className="flex flex-col">
-          {state.loading === "success" ? (
-            <div className="mt-3 text-lg">
-              Successfully uploaded, select another file
+          <div className="flex justify-center">
+            <div className="flex flex-col ">
+              <div className=" w-screen md:w-96 justify-center grid grid-cols-3">
+                {state.imageArray.map((img) => (
+                  <img key={img.uuid} className="h-20 my-4 mx-3" src={img.thumbnailUrl} />
+                ))}
+              </div>
+              <div className="flex mt-40 justify-center">
+                <input
+                  multiple={true}
+                  id="file-upload"
+                  onChange={(e) => photoSelected(e)}
+                  type="file"
+                  className="bg-blue-100 rounded py-1 px-3 w-80 text-lg text-slate-700"
+                  ref={imageRef}
+                ></input>
+              </div>
             </div>
-          ) : state.loading === "loading" ? (
-            <div className="flex flex-col mt-10">
-              <Spinner className="flex justify-center" />
-            </div>
-          ) : state.loading !== "" ? (
-            <button
-              onClick={() => uploadPhoto()}
-              className="flex bg-blue-600 mt-6 text-white justify-center p-1.5 cursor-pointer rounded-md px-3 text-2xl text-thin"
-            >
-              Upload Photo
-            </button>
-          ) : null}
-          {/* <div className="mt-1.5 text-lg">{state.error}</div> */}
+          </div>
         </div>
-      </div>
+        <div className="flex justify-center">
+          <div className="flex flex-col">
+            {s3loading === "loading" ? (
+              <Spinner className="text-xl mt-5" />
+            ) : s3loading === "success" ? (
+              <div className="text-xl mt-5">Successfully uploaded</div>
+            ) : null}
+          </div>
+        </div>
 
-      <div className="card"></div>
-    </div>
-  )
+        <div className="card"></div>
+      </div>
+    )
+  }
 }

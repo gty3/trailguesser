@@ -14,12 +14,10 @@ interface LevelData {
 }
 interface PostPhotoParams {
   id: string
-  trailName?: string
   latLng: {
     lat: number
     lng: number
   }
-  userId?: string
 }
 
 const apiGateway = import.meta.env.VITE_APIGATEWAY_NAME
