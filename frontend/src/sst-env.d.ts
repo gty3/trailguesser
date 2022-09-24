@@ -12,6 +12,8 @@ interface ImportMetaEnv {
   readonly VITE_GOOGLE_MAPS: string
   readonly VITE_STAGE: string
   readonly VITE_FATHOM_ID: string
+  readonly VITE_ADMIN_API_URL: string
+  readonly VITE_ADMIN_APIGATEWAY_NAME: string
 }
 
 interface ImportMeta {

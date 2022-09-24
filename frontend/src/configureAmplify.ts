@@ -14,6 +14,10 @@ try {
       endpoints: [{ 
         name: import.meta.env.VITE_APIGATEWAY_NAME, 
         endpoint: import.meta.env.VITE_API_URL,
+      },
+      { 
+        name: import.meta.env.VITE_ADMIN_APIGATEWAY_NAME, 
+        endpoint: import.meta.env.VITE_ADMIN_API_URL,
       }]
     },
     Storage: {

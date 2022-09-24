@@ -15,6 +15,7 @@ interface Level {
 type Levels = { [id: string]: Level } | {}
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  // console.log('adminGetUesrgaemes hit')
   const err = { statusCode: 500 }
   const dbClient = new DynamoDBClient({})
   const input = {
@@ -28,7 +29,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   let i = 0
   const res = itemRes.Items.reduce((acc, cur) => {
     const unmarshalled = unmarshall(cur)
-    console.log(Object.values(unmarshalled.levels),'unmarshed')
+    // console.log(Object.values(unmarshalled.levels),'unmarshed')
     if (Object.keys(unmarshalled.levels).length === 0) {
       acc.push({
         userId: unmarshalled.id,
@@ -36,7 +37,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       })
     } else {
       Object.values(unmarshalled.levels).forEach((photoIds) => {
-        console.log(photoIds, 'photoId')
+        // console.log(photoIds, 'photoId')
         i++
       })
       console.log("LAST I", i)

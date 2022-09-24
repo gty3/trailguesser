@@ -17,19 +17,9 @@ export default function Admin() {
   const [authState, setAuthState] = useState(false)
   const [userDataState, setUserDataState] = useState<UserData[]>()
 
-  const loggedIn = async () => {
-    setAuthState(true)
-    // const allPhotos = await API.get(
-    //   import.meta.env.VITE_APIGATEWAY_NAME,
-    //   "/getAllPhotos",
-    //   {}
-    // )
-    // setPhotoState(allPhotos)
-  }
-
   const getPhotos = async () => {
     const allPhotos = await API.get(
-      import.meta.env.VITE_APIGATEWAY_NAME,
+      import.meta.env.VITE_ADMIN_APIGATEWAY_NAME,
       "/getAllPhotos",
       {}
     )
@@ -39,30 +29,35 @@ export default function Admin() {
 
   const getUserLevels = async () => {
     const userLevels = await API.get(
-      import.meta.env.VITE_APIGATEWAY_NAME,
+      import.meta.env.VITE_ADMIN_APIGATEWAY_NAME,
       "/adminGetUserGames",
       {}
     )
     console.log(userLevels)
     setUserDataState(userLevels)
-    
   }
 
-  // useEffect(() => {
-  //   ;(async () => {
-  //     try {
-  //       const user = await Auth.currentAuthenticatedUser()
-  //       console.log("user", user)
-  //     } catch (err) {
-  //       console.log(err)
-  //     }
-  //   })()
-  // }, [])
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const user = await Auth.currentAuthenticatedUser()
+        console.log("user", user)
+        console.log(await getPhotos())
+        const userLevels = await getUserLevels()
+        
+        console.log('userLevels', userLevels)
+        setAuthState(true)
+      } catch (err) {
+        console.log(err)
+        setAuthState(false)
+      }
+    })()
+  }, [])
 
   if (!authState) {
     return (
       <div className="flex justify-center mt-40">
-        <LogIn loggedIn={loggedIn} />
+        Access denied
       </div>
     )
   } else if (userDataState) {

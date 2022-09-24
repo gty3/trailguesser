@@ -18,7 +18,7 @@ export default function Guessed({
       <div className="flex justify-center mb-2">
         Your guess was {distance} miles away
       </div>
-      <div className="flex justify-center mb-4">You get {points} points!</div>
+      <div className="flex justify-center mb-4 text-xl">You get {points} points!</div>
       <div className="flex justify-center">
         <div
           className="md:h-96 md:w-1/2
