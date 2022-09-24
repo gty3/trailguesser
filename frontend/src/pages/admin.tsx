@@ -19,7 +19,7 @@ export default function Admin() {
 
   const getPhotos = async () => {
     const allPhotos = await API.get(
-      import.meta.env.VITE_ADMIN_APIGATEWAY_NAME,
+      import.meta.env.VITE_APIGATEWAY_NAME,
       "/getAllPhotos",
       {}
     )
@@ -29,7 +29,7 @@ export default function Admin() {
 
   const getUserLevels = async () => {
     const userLevels = await API.get(
-      import.meta.env.VITE_ADMIN_APIGATEWAY_NAME,
+      import.meta.env.VITE_APIGATEWAY_NAME,
       "/adminGetUserGames",
       {}
     )

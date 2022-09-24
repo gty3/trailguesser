@@ -84,6 +84,7 @@ export function MyStack({ stack }: StackContext) {
           LEVELS_TABLE: levelsTable.tableName,
           USER_GAMES: userGames.tableName,
           EMAILS_TABLE: emailsTable.tableName,
+          STAGE: stack.stage
         },
       },
       authorizer: "iam",
@@ -96,59 +97,60 @@ export function MyStack({ stack }: StackContext) {
       "POST /savePhotoData": "functions/savePhotoData.handler",
       "POST /submitEmail": "functions/submitEmail.handler",
       "POST /newGame": "functions/newGame.handler",
-    },
-  })
-
-  const adminApi = new Api(stack, "adminApi", {
-    defaults: {
-      function: {
-        environment: {
-          BUCKET_NAME: bucket.bucketName,
-          PHOTO_TABLE: photoTable.tableName,
-          S3_CLOUDFRONT: dist.domainName,
-          S3_BUCKET: bucket.cdk.bucket.bucketDomainName,
-          LEVELS_TABLE: levelsTable.tableName,
-          USER_GAMES: userGames.tableName,
-          EMAILS_TABLE: emailsTable.tableName,
-        },
-      },
-      authorizer: "iam",
-    },
-    routes: {
       "GET /getAllPhotos": "functions/getAllPhotos.handler",
       "GET /adminGetUserGames": "functions/adminGetUserGames.handler",
     },
   })
 
-  const customRole = new iam.Role(stack, "CustomRole", {
-    assumedBy: new iam.FederatedPrincipal("cognito-identity.amazonaws.com", {
-      StringEquals: {
-        "cognito-identity.amazonaws.com:aud": auth.cognitoIdentityPoolId,
-      },
-      "ForAnyValue:StringLike": {
-        "cognito-identity.amazonaws.com:amr": "authenticated",
-      },
-    }, "sts:AssumeRoleWithWebIdentity"),
-  })
-  customRole.addToPolicy(
-    new iam.PolicyStatement({
-      actions: ["execute-api:Invoke"],
-      effect: iam.Effect.ALLOW,
-      resources: [
-        `arn:aws:execute-api:${stack.region}:${stack.account}:${adminApi.httpApiId}/*`,
-      ],
-    })
-  )
+  // const adminApi = new Api(stack, "adminApi", {
+  //   defaults: {
+  //     function: {
+  //       environment: {
+  //         BUCKET_NAME: bucket.bucketName,
+  //         PHOTO_TABLE: photoTable.tableName,
+  //         S3_CLOUDFRONT: dist.domainName,
+  //         S3_BUCKET: bucket.cdk.bucket.bucketDomainName,
+  //         LEVELS_TABLE: levelsTable.tableName,
+  //         USER_GAMES: userGames.tableName,
+  //         EMAILS_TABLE: emailsTable.tableName,
+  //       },
+  //     },
+  //     authorizer: "iam",
+  //   },
+  //   routes: {
+  //     "GET /getAllPhotos": "functions/getAllPhotos.handler",
+  //     "GET /adminGetUserGames": "functions/adminGetUserGames.handler",
+  //   },
+  // })
 
-  const cfnUserPoolGroup = new cognito.CfnUserPoolGroup(
-    stack,
-    "UserPoolGroup",
-    {
-      userPoolId: auth.userPoolId,
-      groupName: "admin",
-      roleArn: customRole.roleArn,
-    }
-  )
+  // const customRole = new iam.Role(stack, "CustomRole", {
+  //   assumedBy: new iam.FederatedPrincipal("cognito-identity.amazonaws.com", {
+  //     StringEquals: {
+  //       "cognito-identity.amazonaws.com:aud": auth.cognitoIdentityPoolId,
+  //     },
+  //     "ForAnyValue:StringLike": {
+  //       "cognito-identity.amazonaws.com:amr": "authenticated",
+  //     },
+  //   }, "sts:AssumeRoleWithWebIdentity"),
+  // })
+  // customRole.addToPolicy(
+  //   new iam.PolicyStatement({
+  //     actions: ["execute-api:Invoke"],
+  //     effect: iam.Effect.ALLOW,
+  //     resources: [
+  //       `arn:aws:execute-api:${stack.region}:${stack.account}:${adminApi.httpApiId}/*`,
+  //     ],
+  //   })
+  // )
+  // const cfnUserPoolGroup = new cognito.CfnUserPoolGroup(
+  //   stack,
+  //   "UserPoolGroup",
+  //   {
+  //     userPoolId: auth.userPoolId,
+  //     groupName: "admin",
+  //     roleArn: customRole.roleArn,
+  //   }
+  // )
 
   api.attachPermissions([
     bucket,
@@ -157,13 +159,13 @@ export function MyStack({ stack }: StackContext) {
     userGames,
     emailsTable,
   ])
-  adminApi.attachPermissions([
-    bucket,
-    photoTable,
-    levelsTable,
-    userGames,
-    emailsTable,
-  ])
+  // adminApi.attachPermissions([
+  //   bucket,
+  //   photoTable,
+  //   levelsTable,
+  //   userGames,
+  //   emailsTable,
+  // ])
 
   auth.attachPermissionsForAuthUsers(stack, [bucket, api])
   auth.attachPermissionsForUnauthUsers(stack, [api, bucket])
@@ -182,8 +184,8 @@ export function MyStack({ stack }: StackContext) {
       VITE_GOOGLE_MAPS: process.env.GOOGLE_MAPS ?? "",
       VITE_STAGE: stack.stage,
       VITE_FATHOM_ID: process.env.FATHOM_ID ?? "",
-      VITE_ADMIN_API_URL: adminApi.url,
-      VITE_ADMIN_APIGATEWAY_NAME: adminApi.httpApiId,
+      // VITE_ADMIN_API_URL: adminApi.url,
+      // VITE_ADMIN_APIGATEWAY_NAME: adminApi.httpApiId,
     },
     customDomain:
       stack.stage === "prod"

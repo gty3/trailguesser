@@ -115,10 +115,18 @@ export default function Upload() {
                   />
                 ))}
               </div>
-              <div className="flex mt-60 justify-center">
+
+              {s3loading !== "success" && (
+                  <div className="flex justify-center text-xl mt-48 mx-4 mb-10 ">
+                    Select photos to upload, multiple photos of the same trail
+                    are welcome
+                  </div>
+                )}
+              <div className="flex justify-center">
+
                 <input
                   multiple={true}
-                  id="file-upload"
+                  id="file"
                   onChange={(e) => photoSelected(e)}
                   type="file"
                   className="bg-blue-100 rounded py-1 px-3 w-80 text-lg text-slate-700"
