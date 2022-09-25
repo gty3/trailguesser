@@ -118,7 +118,7 @@ export default function Upload() {
 
               {s3loading !== "success" && (
                   <div className="flex justify-center text-xl mt-48 mx-4 mb-10 ">
-                    Select photos to upload, multiple photos of the same trail
+                    Select photos or videos to upload, multiple photos of the same trail
                     are welcome
                   </div>
                 )}

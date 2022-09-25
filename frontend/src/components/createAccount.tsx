@@ -25,14 +25,15 @@ const createAccount = ({
       return
     }
     setState({ ...state, submitting: true })
-
+    const email = emailRef.current.value.replace(/\s/g, "")
+    console.log('email', email)
     try {
       const signup = await Auth.signUp({
-        username: emailRef.current.value,
+        username: email,
         password: passwordRef.current.value,
       })
       const signin = await Auth.signIn(
-        emailRef.current.value,
+        email,
         passwordRef.current.value
       )
       setState({ err: "", accountCreated: true, submitting: false })
