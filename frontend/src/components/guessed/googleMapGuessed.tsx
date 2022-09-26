@@ -22,8 +22,8 @@ const GoogleMapGuessed = ({
 
   const onIdle = (m: google.maps.Map) => {
     console.log("onIdle")
-    setZoom(m.getZoom()!)
-    setCenter(m.getCenter()!.toJSON())
+    // setZoom(m.getZoom()!)
+    // setCenter(m.getCenter()!.toJSON())
   }
 
   return (

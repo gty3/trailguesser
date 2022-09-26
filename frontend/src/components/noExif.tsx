@@ -2,7 +2,6 @@ import { uploadPhotoData } from "../lib/api"
 import { useState } from "react"
 import { Image } from "../lib/types"
 import GoogleMapUpload from "./googleMapUpload"
-import ReactPlayer from 'react-player'
 
 const NoExifComponent = ({
   image,
@@ -19,9 +18,6 @@ const NoExifComponent = ({
       <div className="">
         <div className="flex flex-col items-center">
           <img className="h-40" src={image.thumbnailUrl} />
-          {/* <ReactPlayer   url={[
-    {src: image.thumbnailUrl!, type: 'video/webm'}
-  ]} /> */}
           This image doesn't have any location data, drop a pin on the map below
           <div className="w-screen h-80 md:w-96 mt-2">
             <GoogleMapUpload image={image} />

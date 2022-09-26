@@ -60,9 +60,10 @@ export default function Admin() {
         Access denied
       </div>
     )
-  } else if (userDataState) {
+  } else if (!userDataState) {
     return (
-      <div>{userDataState.map((user) => (<div key={user.id} >{JSON.stringify(user.levels)}</div>))}</div>
+      null
+      // <div>{userDataState.map((user) => (<div key={user.id} >{JSON.stringify(user.levels)}</div>))}</div>
     )
   } else {
     return (
