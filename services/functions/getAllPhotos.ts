@@ -50,12 +50,13 @@ export const handler = async (
       const imgUrl =
         "https://" + process.env.S3_CLOUDFRONT + "/public/" + unmarshalled.id
       // i need to sort by time
-      acc.push({ id: unmarshalled.id, imgUrl: imgUrl, time: unmarshalled.time })
+
+      acc.push({ id: unmarshalled.id, imgUrl: imgUrl, time: unmarshalled.time ? unmarshalled.time : 1663464240000 })
       return acc
     }, [] as ImageData[])
 
     res.sort((a, b) => {
-      return a.time - b.time
+      return b.time - a.time
     })
     // console.log('res', res)
 

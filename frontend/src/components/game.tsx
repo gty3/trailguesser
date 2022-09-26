@@ -21,7 +21,7 @@ export default function Play({
   const [marker, setMarker] = React.useState<google.maps.LatLng>()
   const [actualData, setActualData] = useState<GuessLocationReturn>()
   const [guessing, setGuessing] = useState("")
-  const [mapOpen, setMapOpen] = useState(true)
+  const [mapOpen, setMapOpen] = useState(false)
 
   const imagesObjArray = levelState.images
 
@@ -33,6 +33,7 @@ export default function Play({
     nextPhoto()
     setActualData(undefined)
     setMarker(undefined)
+    setMapOpen(false)
   }
 
   const submitGuess = async () => {
@@ -91,17 +92,18 @@ export default function Play({
     )
   } else {
     return (
-      <div className="">
+      <div className="h-screen">
         <img
           src={currentPhoto.url}
-          className="h-screen object-cover"
+          className="h-full object-cover absolute overflow-scroll"
         />
         <div className="">
         <div
           className={
             (!mapOpen ? "hidden " : "") +
-            `md:block md:p-10 md:h-52 md:w-52 md:hover:h-2/3 md:hover:bottom-0
-             md:hover:w-2/3 md:hover:p-20 md:hover:pb-32 absolute bottom-16 right-0 h-72 w-screen`
+            `md:block md:p-10 md:h-52 md:w-52 
+             md:hover:h-2/3 md:hover:bottom-0 md:hover:w-2/3 md:hover:p-20 md:hover:pb-32 
+             absolute bottom-16 right-0 h-72 w-screen`
           }
         >
           <GoogleMap click={onClick} marker={marker} actualData={actualData} />

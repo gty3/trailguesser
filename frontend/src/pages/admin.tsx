@@ -1,11 +1,11 @@
 import { API, Auth } from "aws-amplify"
 import React, { useEffect, useState } from "react"
-import LogIn from "../components/login"
 import "../configureAmplify"
 
 interface PhotoState {
   id: string
   imgUrl: string
+  time: number
 }
 interface UserData {
   id: string
@@ -69,9 +69,10 @@ export default function Admin() {
       <div className="">
         {photoState ? (
           photoState.map((photo) => (
-            <div id={photo.id}>
-              {photo.id}
-              <img className="h-80" src={photo.imgUrl}></img>
+            <div className="m-10" id={photo.id}>
+              <div>{photo.id}</div>
+              <div>{"" + photo.time}</div>
+              <img className="h-80 object-scale-down items-start" src={photo.imgUrl}></img>
             </div>
           ))
         ) : (

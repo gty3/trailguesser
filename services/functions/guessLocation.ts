@@ -78,8 +78,10 @@ export const handler = async (
     lng: (centralLongitude * 180) / Math.PI,
   }
 
-  const points =
-    Math.floor(5000 / ((1/100) * Math.floor(distance) + 1))
+  const points = distance > 9250 ? 0 : Math.floor(
+    5300 / ((9 / 5000) * Math.floor(distance) + 1) - 300
+  )
+
   // const score = Math.floor((50000 / Math.ceil(distance)) * 10)
 
   const zoom =
@@ -125,24 +127,24 @@ export const handler = async (
   } catch (err) {
     /* now that I added newGame api, this should never occur but ill leave it, this will overwrite start time tho */
     console.log("/guessLocation Error", err)
-  //   const updateCommand = new UpdateItemCommand({
-  //     ExpressionAttributeNames: {
-  //       "#LS": "levels",
-  //       "#LE": level,
-  //     },
-  //     Key: {
-  //       id: {
-  //         S: identityId,
-  //       },
-  //     },
-  //     ExpressionAttributeValues: marshall({
-  //       ":ld": { [id]: { distance: distance, end: timeNow } },
-  //     }),
-  //     UpdateExpression: "SET #LS.#LE = :ld",
-  //     TableName: process.env.USER_GAMES,
-  //   })
-  //   const updateRes = await dbClient.send(updateCommand)
-  //   console.log("updateREs", updateRes)
+    //   const updateCommand = new UpdateItemCommand({
+    //     ExpressionAttributeNames: {
+    //       "#LS": "levels",
+    //       "#LE": level,
+    //     },
+    //     Key: {
+    //       id: {
+    //         S: identityId,
+    //       },
+    //     },
+    //     ExpressionAttributeValues: marshall({
+    //       ":ld": { [id]: { distance: distance, end: timeNow } },
+    //     }),
+    //     UpdateExpression: "SET #LS.#LE = :ld",
+    //     TableName: process.env.USER_GAMES,
+    //   })
+    //   const updateRes = await dbClient.send(updateCommand)
+    //   console.log("updateREs", updateRes)
   }
 
   const res = {

@@ -7,6 +7,7 @@ import * as Fathom from "fathom-client"
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import Admin from "./pages/admin"
 import Login from "./pages/login"
+import Blank from "./pages/blank"
 
 interface State {
   loading: boolean
@@ -37,6 +38,7 @@ function App() {
         <Route path="/upload" element={<Upload />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/blank" element={<Blank />} />
       </Routes>
   )
 }

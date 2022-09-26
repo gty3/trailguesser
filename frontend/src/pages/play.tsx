@@ -83,11 +83,7 @@ export default function Play() {
 
   if (parseInt(levelState.level)) {
     return (
-      // <div>
-      //   <div>
           <Game levelState={levelState} setLevelState={setLevelState} />
-      //   </div>
-      // </div>
     )
   } else {
     return (

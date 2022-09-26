@@ -117,9 +117,11 @@ export default function Upload() {
               </div>
 
               {s3loading !== "success" && (
-                  <div className="flex justify-center text-xl mt-48 mx-4 mb-10 ">
-                    Select photos or videos to upload, multiple photos of the same trail
-                    are welcome
+                <div>
+                  <div className="flex justify-center text-xl mt-48 mx-4 mb-2">
+                    Select photos to upload
+                  </div>
+                  <div className="flex justify-center text-xl mx-4 mb-10 ">Quantity over quality</div>
                   </div>
                 )}
               <div className="flex justify-center">
