@@ -41,10 +41,12 @@ export const handler = async (
     }
     const command = new ScanCommand(input)
     const itemRes = await dbClient.send(command)
+    
     if (!itemRes.Items) {
       return err
     }
     let i = 0
+    console.log('itemRes.Items', itemRes.Items)
     const res = itemRes.Items.reduce((acc, cur) => {
       const unmarshalled = unmarshall(cur)
       // console.log(Object.values(unmarshalled.levels),'unmarshed')
@@ -67,6 +69,11 @@ export const handler = async (
       }
       return acc
     }, [] as {}[])
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(res)
+    }
   } else {
     return {
       statusCode: 403

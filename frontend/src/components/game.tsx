@@ -92,10 +92,11 @@ export default function Play({
     )
   } else {
     return (
-      <div className="h-screen">
+      <div className="">
+      {/* <div className="h-screen bg-center bg-cover bg-no-repeat bg-fixed" style={{ backgroundImage: `url(${currentPhoto.url})` }}> */}
         <img
           src={currentPhoto.url}
-          className="h-full object-cover absolute overflow-scroll"
+          className="h-screen absolute max-w-max"
         />
         <div className="">
         <div
@@ -147,6 +148,7 @@ export default function Play({
           </div>
         </div>
         </div>
+      {/* </div> */}
       </div>
     )
   }

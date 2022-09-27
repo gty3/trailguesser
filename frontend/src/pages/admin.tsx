@@ -16,6 +16,7 @@ export default function Admin() {
   const [photoState, setPhotoState] = useState<PhotoState[]>()
   const [authState, setAuthState] = useState(false)
   const [userDataState, setUserDataState] = useState<UserData[]>()
+  const [pageState, setPageState] = useState("")
 
   const getPhotos = async () => {
     const allPhotos = await API.get(
@@ -23,7 +24,6 @@ export default function Admin() {
       "/getAllPhotos",
       {}
     )
-    console.log("allPhoots", allPhotos)
     setPhotoState(allPhotos)
   }
 
@@ -33,7 +33,7 @@ export default function Admin() {
       "/adminGetUserGames",
       {}
     )
-    console.log(userLevels)
+    console.log("gottenUserLevels", userLevels)
     setUserDataState(userLevels)
   }
 
@@ -42,10 +42,11 @@ export default function Admin() {
       try {
         const user = await Auth.currentAuthenticatedUser()
         console.log("user", user)
-        console.log(await getPhotos())
-        const userLevels = await getUserLevels()
+        await getPhotos()
         
-        console.log('userLevels', userLevels)
+        const userLevels = await getUserLevels()
+
+        console.log("userLevels", userLevels)
         setAuthState(true)
       } catch (err) {
         console.log(err)
@@ -55,37 +56,44 @@ export default function Admin() {
   }, [])
 
   if (!authState) {
+    return <div className="flex justify-center mt-40">Access denied</div>
+  } else if (pageState === "users") {
+
+    console.log("userDataState", userDataState)
     return (
-      <div className="flex justify-center mt-40">
-        Access denied
+      <div>
+        {userDataState?.map((user) => (
+          <div key={user.id}>{JSON.stringify(user.levels)}</div>
+        ))}
       </div>
     )
-  } else if (!userDataState) {
+  } else if (pageState === "photos") {
     return (
-      null
-      // <div>{userDataState.map((user) => (<div key={user.id} >{JSON.stringify(user.levels)}</div>))}</div>
+      <div>
+        (
+        {photoState?.map((photo) => (
+          <div className="m-10" id={photo.id}>
+            <div>{photo.id}</div>
+            <div>{"" + photo.time}</div>
+            <img
+              className="h-80 object-scale-down items-start"
+              src={photo.imgUrl}
+            ></img>
+          </div>
+        ))}
+      </div>
     )
   } else {
     return (
       <div className="">
-        {photoState ? (
-          photoState.map((photo) => (
-            <div className="m-10" id={photo.id}>
-              <div>{photo.id}</div>
-              <div>{"" + photo.time}</div>
-              <img className="h-80 object-scale-down items-start" src={photo.imgUrl}></img>
-            </div>
-          ))
-        ) : (
-          <div>
-            <button onClick={getPhotos} className="text-lg bg-gray-500">
-              Photos
-            </button>
-            <button onClick={getUserLevels} className="">
-              UserLevels
-            </button>
-          </div>
-        )}
+        <div>
+          <button onClick={() => setPageState("photos")} className="text-lg bg-gray-500">
+            Photos
+          </button>
+          <button onClick={() => setPageState("users")} className="">
+            UserLevels
+          </button>
+        </div>
         <div className="">?</div>
       </div>
     )
