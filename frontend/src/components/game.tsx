@@ -71,12 +71,13 @@ export default function Play({
   const currentPhoto: PhotoObj = imagesObjArray[currentImageState]
 
   useEffect(() => {
-    (async () => {
-      console.log('newGame fn called')
+    ;(async () => {
+      console.log("newGame fn called")
       await newGame({
-      level: levelState.level,
-      photoId: currentPhoto.id
-    })})()
+        level: levelState.level,
+        photoId: currentPhoto.id,
+      })
+    })()
   }, [currentImageState])
 
   if (actualData && marker) {
@@ -92,46 +93,54 @@ export default function Play({
     )
   } else {
     return (
-      <div className="">
-      {/* <div className="h-screen bg-center bg-cover bg-no-repeat bg-fixed" style={{ backgroundImage: `url(${currentPhoto.url})` }}> */}
+      <div className="overflow-auto">
+        {/* <div className="h-screen bg-center bg-cover bg-no-repeat bg-fixed" style={{ backgroundImage: `url(${currentPhoto.url})` }}> */}
         <img
           src={currentPhoto.url}
-          className="h-screen absolute max-w-max"
+          className="h-screen max-w-max relative
+          md:h-screen "
         />
         <div className="">
-        <div
-          className={
-            (!mapOpen ? "hidden " : "") +
-            `md:block md:p-10 md:h-52 md:w-52 
+          <div
+            className={
+              (!mapOpen ? "hidden " : "") +
+              `md:block md:p-10 md:h-52 md:w-52 
              md:hover:h-2/3 md:hover:bottom-0 md:hover:w-2/3 md:hover:p-20 md:hover:pb-32 
              absolute bottom-16 right-0 h-72 w-screen`
-          }
-        >
-          <GoogleMap click={onClick} marker={marker} actualData={actualData} />
-          <button
-                onClick={submitGuess}
-                className="md:block w-full hidden justify-center p-2 text-lg mt-2  bg-blue-600 text-white rounded"
-              >
-                {guessing === "loading" ? (
-                  <Spinner className="pb-2 flex justify-center" />
-                ) : marker ? (
-                  "Guess!"
-                ) : (
-                  "Place a marker"
-                )}
-              </button>
-        </div>
-
-        <div className=" md:flex md:relative bottom-4 absolute w-screen">
-          <div className="flex justify-center">
+            }
+          >
+            <GoogleMap
+              click={onClick}
+              marker={marker}
+              actualData={actualData}
+            />
             <button
-              className="md:hidden w-32 flex justify-center p-2 mt-2 mr-8 bg-blue-600 text-white rounded"
-              onClick={() => setMapOpen(!mapOpen)}
+              onClick={submitGuess}
+              className="md:block w-full hidden justify-center p-2 text-lg mt-2  bg-blue-600 text-white rounded"
             >
-              {" "}
-              {mapOpen ? "Hide map" : "Show map"}
+              {guessing === "loading" ? (
+                <Spinner className="pb-2 flex justify-center" />
+              ) : marker ? (
+                "Guess!"
+              ) : (
+                "Place a marker"
+              )}
             </button>
-            {mapOpen && (
+          </div>
+
+          {/* <div className="flex justify-center"> */}
+          {mapOpen ? (
+            <div
+              className=" md:flex md:relative
+         bottom-4 absolute w-64 ml-auto mr-auto left-0 right-0 flex"
+            >
+              <button
+                className="md:hidden w-32 flex justify-center p-2 mt-2 mr-8 bg-blue-600 text-white rounded"
+                onClick={() => setMapOpen(!mapOpen)}
+              >
+                Hide map
+              </button>
+
               <button
                 onClick={submitGuess}
                 className="md:hidden w-32 flex justify-center p-2  mt-2  bg-blue-600 text-white rounded"
@@ -141,14 +150,28 @@ export default function Play({
                 ) : marker ? (
                   "Guess!"
                 ) : (
-                  "Place a marker"
+                  "Place marker"
                 )}
               </button>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div
+              className=" md:flex md:relative
+              bottom-4 absolute w-48 ml-auto mr-auto left-0 right-0 flex"
+            >
+              {" "}
+              <button
+                className="md:hidden w-48 flex justify-center p-2 mt-2 bg-blue-600 text-white rounded"
+                onClick={() => setMapOpen(!mapOpen)}
+              >
+                Show map
+              </button>
+            </div>
+          )}
+
+          {/* </div> */}
         </div>
-        </div>
-      {/* </div> */}
+        {/* </div> */}
       </div>
     )
   }
