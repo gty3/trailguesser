@@ -8,20 +8,20 @@ import { IAMAuthorizer } from "lib/types"
 
 interface UserGames {
   id: string
-  levels: any
+  levels: Record<string, Level>
 }
 
 interface Level {
-  [id: string]: {
-    distance: number
-  }
+  distance: number
+  end?: number
+  start?: number
 }
+
 type Levels = { [id: string]: Level } | {}
 
 export const handler = async (
   event: APIGatewayProxyEventV2WithRequestContext<IAMAuthorizer>
 ) => {
-
   const identityId =
     event.requestContext.authorizer.iam.cognitoIdentity.amr[0] ===
     "authenticated"
@@ -41,42 +41,46 @@ export const handler = async (
     }
     const command = new ScanCommand(input)
     const itemRes = await dbClient.send(command)
-    
+
     if (!itemRes.Items) {
       return err
     }
     let i = 0
-    console.log('itemRes.Items', itemRes.Items)
-    const res = itemRes.Items.reduce((acc, cur) => {
-      const unmarshalled = unmarshall(cur)
-      // console.log(Object.values(unmarshalled.levels),'unmarshed')
-      if (Object.keys(unmarshalled.levels).length === 0) {
-        acc.push({
-          userId: unmarshalled.id,
-          photoIdsCompleted: 0,
-        })
-      } else {
-        Object.values(unmarshalled.levels).forEach((photoIds) => {
-          // console.log(photoIds, 'photoId')
-          i++
-        })
-        console.log("LAST I", i)
-  
-        acc.push({
-          userId: unmarshalled.id,
-          photoIdsCompleted: i,
-        })
-      }
-      return acc
-    }, [] as {}[])
+
+    const userData = itemRes.Items.map((user) => {
+      return unmarshall(user)
+    })
+
+
+    // const res = itemRes.Items.reduce((acc, cur) => {
+    //   const unmarshalled = unmarshall(cur)
+
+    //   if (Object.keys(unmarshalled.levels).length === 0) {
+    //     acc.push({
+    //       userId: unmarshalled.id,
+    //       photoIdsCompleted: 0,
+    //     })
+    //   } else {
+    //     Object.values(unmarshalled.levels).forEach((photoIds) => {
+
+    //       i++
+    //     })
+    //     acc.push({
+    //       userId: unmarshalled.id,
+    //       photoIdsCompleted: i,
+    //       // time:
+    //     })
+    //   }
+    //   return acc
+    // }, [] as {}[])
 
     return {
       statusCode: 200,
-      body: JSON.stringify(res)
+      body: JSON.stringify(userData),
     }
   } else {
     return {
-      statusCode: 403
+      statusCode: 403,
     }
   }
 }

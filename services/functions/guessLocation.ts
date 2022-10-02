@@ -124,6 +124,7 @@ export const handler = async (
       TableName: process.env.USER_GAMES,
     })
     const putRes = await dbClient.send(updateLevel)
+    console.log('putRes', updateLevel.input.Key)
   } catch (err) {
     /* now that I added newGame api, this should never occur but ill leave it, this will overwrite start time tho */
     console.log("/guessLocation Error", err)

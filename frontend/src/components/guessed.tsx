@@ -23,7 +23,7 @@ export default function Guessed({
   const pointsWithComma = points.toLocaleString("en-US")
 
   return (
-    <div className=" flex flex-col pt-24 justify-center">
+    <div className=" absolute bottom-10 md:relative md:flex md:flex-col md:pt-24 md:justify-center">
       <div className="flex justify-center">
         <div
           className="md:h-96 md:w-1/2

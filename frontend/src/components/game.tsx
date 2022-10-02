@@ -79,6 +79,17 @@ export default function Play({
       })
     })()
   }, [currentImageState])
+  // useEffect(() => {
+  //   const scrollDistance =
+  //     (document.getElementById("scroller")!.scrollWidth -
+  //       document.getElementById("scroller")!.clientWidth) /
+  //     2
+  //   document.getElementById("scroller")?.scroll({
+  //     left: scrollDistance,
+  //     top: 0,
+  //     behavior: "smooth",
+  //   })
+  // }, [document.getElementById("scroller")])
 
   if (actualData && marker) {
     return (
@@ -93,7 +104,7 @@ export default function Play({
     )
   } else {
     return (
-      <div className="overflow-auto">
+      <div className="overflow-auto" id="scroller">
         {/* <div className="h-screen bg-center bg-cover bg-no-repeat bg-fixed" style={{ backgroundImage: `url(${currentPhoto.url})` }}> */}
         <img
           src={currentPhoto.url}

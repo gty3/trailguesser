@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom"
 import Admin from "./pages/admin"
 import Login from "./pages/login"
 import Blank from "./pages/blank"
+import AdminDaily from "./pages/adminDaily"
 
 interface State {
   loading: boolean
@@ -39,6 +40,7 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/login" element={<Login />} />
         <Route path="/blank" element={<Blank />} />
+        <Route path="/admindaily" element={<AdminDaily />} />
       </Routes>
   )
 }
