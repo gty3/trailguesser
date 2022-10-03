@@ -99,6 +99,7 @@ export function MyStack({ stack }: StackContext) {
       "POST /newGame": "functions/newGame.handler",
       "GET /getAllPhotos": "functions/getAllPhotos.handler",
       "GET /adminGetUserGames": "functions/adminGetUserGames.handler",
+      "GET /adminGetLevels": "functions/adminGetLevels.handler"
     },
   })
 

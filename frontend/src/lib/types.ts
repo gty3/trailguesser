@@ -26,3 +26,8 @@ export interface LevelState {
     url: string
   }[]
 }
+
+export interface UserData {
+  id: string
+  levels: { [id: string]: { [id: string]: string } }
+}

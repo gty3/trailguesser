@@ -1,21 +1,20 @@
 import { API, Auth } from "aws-amplify"
 import React, { useEffect, useState } from "react"
+import AdminLevels from "../components/adminLevels"
 import "../configureAmplify"
+import { LevelState } from "../lib/types"
 
 interface PhotoState {
   id: string
   imgUrl: string
   time: number
 }
-interface UserData {
-  id: string
-  levels: { [id: string]: { [id: string]: string } }
-}
+
 
 export default function Admin() {
   const [photoState, setPhotoState] = useState<PhotoState[]>()
   const [authState, setAuthState] = useState(false)
-  const [userDataState, setUserDataState] = useState<UserData[]>()
+  const [levelsState, setLevels] = useState<LevelState[]>()
   const [pageState, setPageState] = useState("")
 
   const getPhotos = async () => {
@@ -26,6 +25,15 @@ export default function Admin() {
     )
     setPhotoState(allPhotos)
   }
+  const getLevels = async () => {
+    const levels = await API.get(
+      import.meta.env.VITE_APIGATEWAY_NAME,
+      "/adminGetLevels",
+      {}
+    )
+      console.log('levels', levels)
+    setLevels(levels)
+  }
 
   const getUserLevels = async () => {
     const userLevels = await API.get(
@@ -34,7 +42,7 @@ export default function Admin() {
       {}
     )
     console.log("gottenUserLevels", userLevels)
-    setUserDataState(userLevels)
+    // setLevels(userLevels)
   }
 
   useEffect(() => {
@@ -42,11 +50,12 @@ export default function Admin() {
       try {
         const user = await Auth.currentAuthenticatedUser()
         console.log("user", user)
+        await getLevels()
         await getPhotos()
         
-        const userLevels = await getUserLevels()
+        // const userLevels = await getUserLevels()
 
-        console.log("userLevels", userLevels)
+        // console.log("userLevels", userLevels)
         setAuthState(true)
       } catch (err) {
         console.log(err)
@@ -59,17 +68,18 @@ export default function Admin() {
     return <div className="flex justify-center mt-40">Access denied</div>
   } else if (pageState === "users") {
 
-    console.log("userDataState", userDataState)
+    // console.log("userDataState", levelsState)
     return (
       <div>
-        {userDataState?.map((user) => (
-          <div key={user.id}>{JSON.stringify(user.levels)}</div>
+        {levelsState?.map((user) => (
+          <div key={user.level}>{JSON.stringify(user.images)}</div>
         ))}
       </div>
     )
-  } else if (pageState === "photos") {
+  } else if (levelsState) {
     return (
       <div>
+        <AdminLevels levelsState={levelsState}/>
         (
         {photoState?.map((photo) => (
           <div className="m-10" id={photo.id}>
