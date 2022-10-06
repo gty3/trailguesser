@@ -1,4 +1,4 @@
-import { GuessLocationReturn, LatLng, LevelState } from "../lib/types"
+import { GuessLocationReturn, LatLng, LevelObj } from "../lib/types"
 import GoogleMapGuessed from "./guessed/googleMapGuessed"
 
 export default function Guessed({

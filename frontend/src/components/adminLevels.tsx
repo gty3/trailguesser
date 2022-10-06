@@ -1,6 +1,6 @@
-import { LevelState } from "../lib/types"
+import { LevelObj } from "../lib/types"
 
-const AdminLevels = ({ levelsState }: { levelsState: LevelState[] }) => {
+const AdminLevels = ({ levelsState }: { levelsState: LevelObj[] }) => {
   console.log("eve", Array.isArray(levelsState))
   return (
     <div>

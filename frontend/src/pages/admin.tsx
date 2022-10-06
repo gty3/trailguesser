@@ -2,7 +2,7 @@ import { API, Auth } from "aws-amplify"
 import React, { useEffect, useState } from "react"
 import AdminLevels from "../components/adminLevels"
 import "../configureAmplify"
-import { LevelState } from "../lib/types"
+import { LevelObj } from "../lib/types"
 
 interface PhotoState {
   id: string
@@ -14,7 +14,7 @@ interface PhotoState {
 export default function Admin() {
   const [photoState, setPhotoState] = useState<PhotoState[]>()
   const [authState, setAuthState] = useState(false)
-  const [levelsState, setLevels] = useState<LevelState[]>()
+  const [levelsState, setLevels] = useState<LevelObj[]>()
   const [pageState, setPageState] = useState("")
 
   const getPhotos = async () => {

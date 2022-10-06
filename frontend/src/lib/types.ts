@@ -19,9 +19,15 @@ export interface GuessLocationReturn {
   zoom: number
 }
 
-export interface LevelState {
+export interface LevelObj {
   level: string
   images: {
+    id: string
+    url: string
+  }[]
+}
+export interface LevelsMap {
+  [level: string]: {
     id: string
     url: string
   }[]

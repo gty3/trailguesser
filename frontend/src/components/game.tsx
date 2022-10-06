@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import Spinner from "../components/spinner"
 import GoogleMap from "../components/googleMap"
 import { guessRes, newGame } from "../lib/api"
-import { GuessLocationReturn, LatLng, LevelState } from "../lib/types"
+import { GuessLocationReturn, LatLng, LevelObj } from "../lib/types"
 import Guessed from "./guessed"
 interface PhotoObj {
   id: string
@@ -13,8 +13,9 @@ interface PhotoObj {
 export default function Play({
   levelState,
   setLevelState,
+  
 }: {
-  levelState: LevelState
+  levelState: LevelObj
   setLevelState: any
 }) {
   const [currentImageState, setCurrentImageState] = useState(0)
