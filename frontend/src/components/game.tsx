@@ -5,6 +5,8 @@ import GoogleMap from "../components/googleMap"
 import { guessRes, newGame } from "../lib/api"
 import { GuessLocationReturn, LatLng, LevelObj } from "../lib/types"
 import Guessed from "./guessed"
+import { useNavigate } from "react-router-dom"
+
 interface PhotoObj {
   id: string
   url: string
@@ -29,12 +31,17 @@ export default function Play({
   const onClick = (e: google.maps.MapMouseEvent) => {
     setMarker(e.latLng!)
   }
+  const navigate = useNavigate()
 
   const nextImage = () => {
-    nextPhoto()
-    setActualData(undefined)
-    setMarker(undefined)
-    setMapOpen(false)
+    if (currentImageState < 4) {
+      setCurrentImageState(currentImageState + 1)
+      setActualData(undefined)
+      setMarker(undefined)
+      setMapOpen(false)
+    } else {
+      navigate(0)
+    }
   }
 
   const submitGuess = async () => {
@@ -61,13 +68,7 @@ export default function Play({
     setGuessing("")
   }
 
-  const nextPhoto = () => {
-    if (currentImageState < 4) {
-      setCurrentImageState(currentImageState + 1)
-    } else {
-      setLevelState("levels")
-    }
-  }
+
 
   const currentPhoto: PhotoObj = imagesObjArray[currentImageState]
 
@@ -80,6 +81,7 @@ export default function Play({
       })
     })()
   }, [currentImageState])
+
   // useEffect(() => {
   //   const scrollDistance =
   //     (document.getElementById("scroller")!.scrollWidth -

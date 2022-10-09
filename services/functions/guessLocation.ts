@@ -34,7 +34,7 @@ export const handler = async (
   }
 
   const dbClient = new DynamoDBClient({})
-
+  /* get photo details - latlng */
   const input = {
     Key: { id: { S: id } },
     TableName: process.env.PHOTO_TABLE,

@@ -17,8 +17,6 @@ interface ImageData {
   time: number
 }
 
-
-
 export const handler = async (
   event: APIGatewayProxyEventV2WithRequestContext<IAMAuthorizer>
 ) => {
@@ -47,18 +45,38 @@ export const handler = async (
 
     const res = itemRes.Items.reduce((acc, cur) => {
       const unmarshalled = unmarshall(cur)
-      const imgUrl =
-        "https://" + process.env.S3_CLOUDFRONT + "/public/" + unmarshalled.id
-      // i need to sort by time
+      const imageBody = {
+        bucket: process.env.BUCKET_NAME,
+        key: "public/" + unmarshalled.id,
+        edits: {
+          resize: {
+            width: 400,
+            height: 400,
+            fit: "cover",
+          },
+        },
+      }
+      const converting = Buffer.from(JSON.stringify(imageBody)).toString(
+        "base64"
+      )
+      console.log("converting", imageBody)
+      const convertedUrl = process.env.SERVERLESS_IMAGE_HANDLER + converting
+      // console.log(convertedUrl)
 
-      acc.push({ id: unmarshalled.id, imgUrl: imgUrl, time: unmarshalled.time ? unmarshalled.time : 1663464240000 })
+      // const imgUrl =
+      //   "https://" + process.env.S3_CLOUDFRONT + "/public/" + unmarshalled.id
+
+      acc.push({
+        id: unmarshalled.id,
+        imgUrl: convertedUrl,
+        time: unmarshalled.time ? unmarshalled.time : 1663464240000,
+      })
       return acc
     }, [] as ImageData[])
 
     res.sort((a, b) => {
       return b.time - a.time
     })
-    // console.log('res', res)
 
     return {
       statusCode: 200,

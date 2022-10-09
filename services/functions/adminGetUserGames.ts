@@ -30,8 +30,8 @@ export const handler = async (
 
   const adminId =
     process.env.STAGE === "prod"
-      ? "33b41206-f92b-4554-8cdf-af49afe41450"
-      : "c0acce29-dc9c-4382-b268-d747c7edb22a"
+      ? process.env.PROD_IDENTITY
+      : process.env.DEV_IDENTITY
 
   if (identityId === adminId) {
     const err = { statusCode: 500 }

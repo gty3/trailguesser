@@ -6,17 +6,16 @@ import GoogleMap from "../components/googleMap"
 import Game from "../components/game"
 import { retrieveLevel, getUserGames, getAllLevels } from "../lib/api"
 import Email from "../components/email"
-import { LevelObj, LevelsMap } from "../lib/types"
-
-interface PhotoArray {
-  id: string
-  imgUrl: string
+import { LevelObj, LevelsMap, UserLevels } from "../lib/types"
+import Medal from "../components/medal"
+interface CompletedLevels {
+  [level: string]: Record<string, any>
 }
-;[]
 
 export default function Play() {
   const [pageState, setPageState] = useState<string>("loading")
   const [levelsState, setLevelsState] = useState<LevelsMap>()
+  const [completedState, setCompletedState] = useState<CompletedLevels>({})
 
   // const location = useLocation()
   // const locationState = location.state as LocationState
@@ -33,15 +32,18 @@ export default function Play() {
       if (!levels) {
         return
       }
-      if (!games.levels) {
+
+      if (Object.keys(games.levels).length === 0) {
         setPageState("USA")
+      } else {
+        games.levels && setCompletedState(games.levels)
+        setPageState("levels")
       }
-      setPageState("levels")
       setLevelsState(levels)
     })()
   }, [])
 
-  const CustyButton = ({ level }: { level: string }) => {
+  const CustyButton = ({ level }: { level: string }): JSX.Element => {
     return (
       <div
         onClick={() => setPageState(level)}
@@ -53,15 +55,29 @@ export default function Play() {
   }
 
   if (pageState === "loading") {
-    return <Spinner />
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    )
   } else if (pageState === "levels") {
     return (
       <>
         <div className="">
           <div className="grid md:grid-flow-col md:pt-80 justify-items-center">
             {Object.entries(levelsState!).map(([level, images]) => (
-              <div>
-                <img src={images[0].url} className="h-40 w-40 mt-10"></img>
+              console.log("images[0]", images[0]),
+              <div key={level} className="">
+                {completedState[level] &&
+                  Object.values(completedState[level]).length > 4 && (
+                    <Medal className="h-10 w-10 absolute ml-28 mt-10 fill-slate-100" />
+                  )}
+                <img
+                  src={
+                    completedState[level] ? images[0].thumbnailUrl : images[0].blurryUrl
+                  }
+                  className="h-40 w-40 mt-10 object-cover"
+                />
                 <div className="flex justify-center">{level}</div>
                 <CustyButton level={level} />
               </div>
@@ -76,7 +92,6 @@ export default function Play() {
     return (
       <Game
         levelState={{ level: pageState, images: levelsState![pageState] }}
-        // pageState={pageState}
         setLevelState={setLevelsState}
       />
     )

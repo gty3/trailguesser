@@ -1,10 +1,7 @@
 import { API } from "aws-amplify"
-import { GuessLocationReturn, LevelObj } from "./types"
+import { GuessLocationReturn, LevelObj, UserLevels } from "./types"
 
-interface UserLevels {
-  id: string | null
-  levels: {}
-}
+
 
 interface PostPhotoParams {
   id: string
@@ -17,6 +14,8 @@ interface PostPhotoParams {
 interface Image {
   id: string
   url: string
+  blurryUrl: string
+  thumbnailUrl: string
 }
 
 const apiGateway = import.meta.env.VITE_APIGATEWAY_NAME
@@ -40,7 +39,8 @@ export async function retrieveLevel(
 }
 
 export async function getAllLevels(): Promise<Record<string, Image[]> | undefined> {
-  return await API.get(apiGateway, "/getAllLevels", {})
+  const params = { body: { screenSize: window.screen.availWidth } }
+  return await API.post(apiGateway, "/getAllLevels", params)
 }
 
 export async function saveUserGame(level: string): Promise<void | undefined> {

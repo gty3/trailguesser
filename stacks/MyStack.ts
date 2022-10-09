@@ -84,7 +84,10 @@ export function MyStack({ stack }: StackContext) {
           LEVELS_TABLE: levelsTable.tableName,
           USER_GAMES: userGames.tableName,
           EMAILS_TABLE: emailsTable.tableName,
-          STAGE: stack.stage
+          STAGE: stack.stage,
+          SERVERLESS_IMAGE_HANDLER: process.env.SERVERLESS_IMAGE_HANDLER?? "",
+          DEV_IDENTITY: process.env.DEV_IDENTITY ?? "",
+          PROD_IDENTITY: process.env.PROD_IDENTITY ?? ""
         },
       },
       authorizer: "iam",
@@ -100,7 +103,7 @@ export function MyStack({ stack }: StackContext) {
       "GET /getAllPhotos": "functions/getAllPhotos.handler",
       "GET /adminGetUserGames": "functions/adminGetUserGames.handler",
       "GET /adminGetLevels": "functions/adminGetLevels.handler",
-      "GET /getAllLevels": "functions/getAllLevels.handler"
+      "POST /getAllLevels": "functions/getAllLevels.handler"
     },
   })
 

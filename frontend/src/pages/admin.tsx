@@ -86,7 +86,7 @@ export default function Admin() {
             <div>{photo.id}</div>
             <div>{"" + photo.time}</div>
             <img
-              className="h-80 object-scale-down items-start"
+              className="h-80 items-start"
               src={photo.imgUrl}
             ></img>
           </div>
