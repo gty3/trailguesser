@@ -77,6 +77,7 @@ export default function Play() {
                     completedState[level] ? images[0].thumbnailUrl : images[0].blurryUrl
                   }
                   className="h-40 w-40 mt-10 object-cover"
+                  
                 />
                 <div className="flex justify-center">{level}</div>
                 <CustyButton level={level} />

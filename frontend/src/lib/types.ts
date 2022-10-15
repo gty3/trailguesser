@@ -24,6 +24,8 @@ export interface LevelObj {
   images: {
     id: string
     url: string
+    blurryUrl: string
+    thumbnailUrl: string
   }[]
 }
 export interface LevelsMap {

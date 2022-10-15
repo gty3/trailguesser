@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         key: "public/" + id,
         edits: {
           resize: {
-            width: 20,
+            width: 40,
             // "height": 160,
             fit: "cover",
           },
@@ -48,7 +48,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
               resize: {
                 // width: 1920,
                 "height": 768,
-                fit: "cover",
+                fit: "inside",
               },
             },
           }

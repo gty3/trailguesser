@@ -7,10 +7,6 @@ import { GuessLocationReturn, LatLng, LevelObj } from "../lib/types"
 import Guessed from "./guessed"
 import { useNavigate } from "react-router-dom"
 
-interface PhotoObj {
-  id: string
-  url: string
-}
 
 export default function Play({
   levelState,
@@ -68,9 +64,7 @@ export default function Play({
     setGuessing("")
   }
 
-
-
-  const currentPhoto: PhotoObj = imagesObjArray[currentImageState]
+  const currentPhoto = imagesObjArray[currentImageState]
 
   useEffect(() => {
     ;(async () => {
@@ -107,9 +101,10 @@ export default function Play({
     )
   } else {
     return (
-      <div className="overflow-auto" id="scroller">
+      <div className="overflow-auto bg-cover md:flex md:justify-center" id="scroller" style={{backgroundImage: `url(${currentPhoto.blurryUrl})` }}>
         {/* <div className="h-screen bg-center bg-cover bg-no-repeat bg-fixed" style={{ backgroundImage: `url(${currentPhoto.url})` }}> */}
         <img
+          
           src={currentPhoto.url}
           className="h-screen max-w-max relative
           md:h-screen "

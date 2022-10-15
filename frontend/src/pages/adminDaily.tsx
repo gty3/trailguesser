@@ -21,7 +21,6 @@ interface DayMap {
 const AdminDaily = () => {
   const [dailyData, setDailyData] = useState<Record<string, User[]>>()
 
-
   useEffect(() => {
     ;(async () => {
       try {
@@ -31,7 +30,7 @@ const AdminDaily = () => {
           "/adminGetUserGames",
           {}
         )
-        console.log('userLevels:', userLevels)
+        console.log("userLevels:", userLevels)
         const dayMap = usersIntoDays(userLevels)
         const days = Object.entries(dayMap).sort((a, b) => {
           const timeDiff = new Date(b[0]).getTime() - new Date(a[0]).getTime()
@@ -43,7 +42,6 @@ const AdminDaily = () => {
       }
     })()
   }, [])
-
 
   const dayToString = (jsTime: number) => {
     const date = new Date(jsTime)
@@ -87,17 +85,20 @@ const AdminDaily = () => {
               <div className="text-2xl mt-10">{key}</div>
               <div>
                 {value.map((user) => (
-                  <div className="mt-2">
-                    {user.id} - {
-                      Object.entries(user.levels).map(
-                        ([levelKey, photoObjArr]) => (
-
+                  <div className="mt-4">
+                    {user.id.substring(10, 15)} -{" "}
+                    {Object.entries(user.levels).map(
+                      ([levelKey, photoObjArr]) => (
+                        <div>
                           <div>
-                            <div>{levelKey + ": " + Object.keys(photoObjArr).length
-                            }</div>
+                            <div className="flex flex-row">{levelKey + ": "}{Object.values(photoObjArr).map((photoLevel) => (
+                              <div className="ml-1">{"d: " + Math.round(photoLevel.distance) + ", "}</div>
+                            )
+                            )}</div>
                           </div>
-                        )
-                      )}
+                        </div>
+                      )
+                    )}
                   </div>
                 ))}
               </div>

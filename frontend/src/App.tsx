@@ -9,6 +9,8 @@ import Admin from "./pages/admin"
 import Login from "./pages/login"
 import Blank from "./pages/blank"
 import AdminDaily from "./pages/adminDaily"
+import { getAllLevels, getUserGames } from "./lib/api"
+import { CompletedLevels, LevelsMap } from "./lib/types"
 
 interface State {
   loading: boolean
@@ -26,11 +28,36 @@ function App() {
   const [state, setState] = useState<State>({
     loading: false,
   })
+
+//   const [levelsState, setLevelsState] = useState<LevelsMap>()
+//   const [completedState, setCompletedState] = useState<CompletedLevels>({})
+// const [pageState, setPageState] = useState<string>("loading")
+
   // console.log('import.meta.env.VITE_STAGE', import.meta.env.VITE_FATHOM)
   if (import.meta.env.VITE_STAGE === "prod") {
     Fathom.load(import.meta.env.VITE_FATHOM_ID)
     usePageViews()
   }
+
+  // useEffect(() => {
+  //   ;(async () => {
+  //     const completedGames = getUserGames()
+  //     const allLevels = getAllLevels()
+  //     const games = await completedGames
+  //     const levels = await allLevels
+  //     if (!levels) {
+  //       return
+  //     }
+
+  //     if (Object.keys(games.levels).length === 0) {
+  //       setPageState("USA")
+  //     } else {
+  //       games.levels && setCompletedState(games.levels)
+  //       setPageState("levels")
+  //     }
+  //     setLevelsState(levels)
+  //   })()
+  // }, [])
 
   return (
       <Routes>

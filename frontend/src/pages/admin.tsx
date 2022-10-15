@@ -82,11 +82,11 @@ export default function Admin() {
         <AdminLevels levelsState={levelsState}/>
         (
         {photoState?.map((photo) => (
-          <div className="m-10" id={photo.id}>
+          <div className="m-10 flex flex-col" id={photo.id}>
             <div>{photo.id}</div>
             <div>{"" + photo.time}</div>
             <img
-              className="h-80 items-start"
+              className="h-40 object-scale-down"
               src={photo.imgUrl}
             ></img>
           </div>
