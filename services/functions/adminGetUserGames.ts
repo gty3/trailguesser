@@ -22,6 +22,7 @@ type Levels = { [id: string]: Level } | {}
 export const handler = async (
   event: APIGatewayProxyEventV2WithRequestContext<IAMAuthorizer>
 ) => {
+  console.log('event.requestContext.authorizer.iam.cognitoIdentity', event.requestContext.authorizer.iam.cognitoIdentity)
   const identityId =
     event.requestContext.authorizer.iam.cognitoIdentity.amr[0] ===
     "authenticated"

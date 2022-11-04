@@ -189,6 +189,7 @@ export function MyStack({ stack }: StackContext) {
       VITE_GOOGLE_MAPS: process.env.GOOGLE_MAPS ?? "",
       VITE_STAGE: stack.stage,
       VITE_FATHOM_ID: process.env.FATHOM_ID ?? "",
+      VITE_SERVERLESS_IMAGE_HANDLER: process.env.SERVERLESS_IMAGE_HANDLER?? ""
       // VITE_ADMIN_API_URL: adminApi.url,
       // VITE_ADMIN_APIGATEWAY_NAME: adminApi.httpApiId,
     },

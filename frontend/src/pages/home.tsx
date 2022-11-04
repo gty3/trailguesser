@@ -31,10 +31,27 @@ export default function Home() {
     })()
   }, [])
 
+  const bgImage = {
+    bucket: import.meta.env.VITE_BUCKET_NAME,
+    key: import.meta.env.VITE_STAGE === 'prod' ? "public/fd358f5c-65dd-4fbf-8713-101b96f13ee7.jpg" : "public/0a293466-3abb-4ff2-aee6-d1cba6474453.jpg"
+    ,
+    edits: {
+      resize: {
+        // width: "" + window.innerWidth,
+        height: window.innerHeight,
+        fit: "cover",
+      },
+    },
+  }
+  console.log(JSON.stringify(bgImage))
+  const blurry = window.btoa(JSON.stringify(bgImage))
+  const blurryUrl = import.meta.env.VITE_SERVERLESS_IMAGE_HANDLER + blurry
+  console.log(blurryUrl)
+  
   return (
     <div
       className="h-screen bg-cover flex flex-col justify-center pb-12"
-      style={{ backgroundImage: "url(finn.jpg)" }}
+      style={{ backgroundImage: `url(${blurryUrl})` }}
     >
       <div className="">
         <div className="px-4 flex justify-center text-7xl text-white italic">

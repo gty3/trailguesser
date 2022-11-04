@@ -29,9 +29,9 @@ function App() {
     loading: false,
   })
 
-//   const [levelsState, setLevelsState] = useState<LevelsMap>()
-//   const [completedState, setCompletedState] = useState<CompletedLevels>({})
-// const [pageState, setPageState] = useState<string>("loading")
+  //   const [levelsState, setLevelsState] = useState<LevelsMap>()
+  //   const [completedState, setCompletedState] = useState<CompletedLevels>({})
+  // const [pageState, setPageState] = useState<string>("loading")
 
   // console.log('import.meta.env.VITE_STAGE', import.meta.env.VITE_FATHOM)
   if (import.meta.env.VITE_STAGE === "prod") {
